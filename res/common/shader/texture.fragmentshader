@@ -1,0 +1,16 @@
+#version 130
+
+in vec2 uvVec;
+
+uniform sampler2D tex;
+uniform vec4 shadeColor = vec4(0,0,0,0);
+uniform float alpha = 1;
+
+out vec4 color;
+
+void main()
+{
+    vec4 texCol = texture2D(tex, uvVec);
+    color = vec4(shadeColor.rgb, 1) * shadeColor.a + texCol * (1-shadeColor.a);
+    color.a = texCol.a * alpha;
+}
