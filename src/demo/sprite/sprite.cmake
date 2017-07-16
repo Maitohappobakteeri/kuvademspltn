@@ -1,6 +1,6 @@
 set(SPRITE_SOURCE_FILES
-    demo/sprite/main.cpp
-    demo/sprite/spritedemo.cpp
+    src/demo/sprite/main.cpp
+    src/demo/sprite/spritedemo.cpp
 )
 
 set(SPRITE_TARGET sprite)

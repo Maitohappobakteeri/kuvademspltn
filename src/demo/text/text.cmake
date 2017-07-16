@@ -1,5 +1,5 @@
 set(TEXT_SOURCE_FILES
-    demo/text/main.cpp
+    src/demo/text/main.cpp
 )
 
 set(TEXT_TARGET text)

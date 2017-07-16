@@ -6,12 +6,11 @@ set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/common/project.hpp.in"
+  "${PROJECT_SOURCE_DIR}/src/common/project.hpp.in"
   "${PROJECT_BINARY_DIR}/project.hpp"
   )
 
-include_directories("demo")
-include_directories("common")
+include_directories("src")
 include_directories("${PROJECT_BINARY_DIR}")
 
 find_program(GPP_COMPILER g++)
@@ -83,28 +82,30 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
 
 set(COMMON_SOURCE_FILES
-    common/demo.cpp
-    common/window.cpp
-    common/loadsprite.cpp
-    common/print.cpp
-    common/residgenerator.cpp
-    common/rng.cpp
+    src/common/demo.cpp
+    src/common/window.cpp
+    src/common/loadsprite.cpp
+    src/common/print.cpp
+    src/common/residgenerator.cpp
+    src/common/rng.cpp
 
-    common/renderer/renderer.cpp
-    common/renderer/shader.cpp
-    common/renderer/texture.cpp
-    common/renderer/buffer.cpp
-    common/renderer/dynamicbox.cpp
-    common/renderer/sprite.cpp
-    common/renderer/spritegroup.cpp
-    common/renderer/font.cpp
-    common/renderer/text.cpp
+    src/common/renderer/renderer.cpp
+    src/common/renderer/shader.cpp
+    src/common/renderer/texture.cpp
+    src/common/renderer/buffer.cpp
+    src/common/renderer/dynamicbox.cpp
+    src/common/renderer/sprite.cpp
+    src/common/renderer/spritegroup.cpp
+    src/common/renderer/font.cpp
+    src/common/renderer/text.cpp
 )
 
 set(COMMON_TARGET ${PROJECT_NAME})
 
 add_library(${COMMON_TARGET} SHARED ${COMMON_SOURCE_FILES})
 add_dependencies(${COMMON_TARGET} prs)
+
+target_include_directories(${COMMON_TARGET} PUBLIC src/common/)
 
 target_link_libraries(${COMMON_TARGET} ${SDL2_LIBRARIES})
 target_link_libraries(${COMMON_TARGET} ${PNG_LIBRARIES})
@@ -114,5 +115,5 @@ target_link_libraries(${COMMON_TARGET} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(${COMMON_TARGET} ${FREETYPE_LIBRARIES})
 target_link_libraries(${COMMON_TARGET} strkilxprs)
 
-include(demo/text/text.cmake)
-include(demo/sprite/sprite.cmake)
+include(src/demo/text/text.cmake)
+include(src/demo/sprite/sprite.cmake)
