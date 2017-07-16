@@ -13,7 +13,13 @@ public:
     Texture(Texture* placeholder=nullptr);
     Texture(GLuint ID);
     Texture(const std::string& filePath, bool loadNow=true, Texture* placeholder=nullptr);
+    Texture(Texture&& texture);
+
+    Texture(const Texture&) = delete;
+
     ~Texture();
+
+    static Texture create_empty(unsigned int width, unsigned height);
 
     Texture& operator=(const Texture&) = delete;
 

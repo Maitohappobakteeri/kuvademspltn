@@ -62,12 +62,35 @@ Texture::Texture(const std::string& filePath, bool loadNow, Texture* placeholder
 }
 
 
+Texture::Texture(Texture&& l)
+    :filePath(l.filePath), texture(l.texture), width(l.width), height(l.height),
+     isLoaded(l.isLoaded)
+{
+    l.isLoaded = false;
+}
+
+
 Texture::~Texture()
 {
     if(isLoaded)
     {
         glDeleteTextures(1, &texture);
     }
+}
+
+
+Texture Texture::create_empty(unsigned int width, unsigned height)
+{
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    return Texture(texture);
 }
 
 
