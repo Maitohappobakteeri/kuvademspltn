@@ -4,6 +4,7 @@
 
 #include "color.hpp"
 #include "buffer.hpp"
+#include "framebuffer.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 #include "spritegroup.hpp"
@@ -74,6 +75,9 @@ public:
                                   const glm::vec2& size, float rotation);
     void render_circle(const Color& color, const glm::vec2& position, const glm::vec2& size);
 
+    void set_render_target_screen();
+    void set_render_target(const Framebuffer& fb);
+
     void handle_resize(unsigned int newWidth, unsigned int newHeight);
     glm::vec2 get_view_scale() const;
 
@@ -115,6 +119,8 @@ private:
     glm::vec2 viewScale;
     unsigned int width;
     unsigned int height;
+
+    bool usingFramebuffer;
 };
 
 #endif

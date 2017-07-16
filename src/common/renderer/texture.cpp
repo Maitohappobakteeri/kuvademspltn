@@ -116,6 +116,19 @@ void Texture::set_texture(GLuint ID)
 }
 
 
+GLuint Texture::get_texture() const
+{
+    if(isLoaded)
+    {
+        return texture;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
 void Texture::bind() const
 {
     glBindTexture(GL_TEXTURE_2D, texture);

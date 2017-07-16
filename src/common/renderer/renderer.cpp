@@ -20,6 +20,9 @@ Renderer::Renderer()
 
     const std::string fontFilename = get_res_from_ID(RES_COMMON_FONT_INCONSOLATA_REGULAR);
     placeholderFont = std::shared_ptr<Font>(new Font(fontFilename, 32));
+
+    width = height = 640;
+    resize();
 }
 
 
@@ -215,7 +218,8 @@ void Renderer::render_sprites()
             sprite->get_texture()->bind();
 
             const glm::vec2 scale = sprite->get_scale() / sgroup->get_scale();
-            const glm::vec2 pos = (sprite->get_position() - sgroup->get_position()) / sgroup->get_scale();
+            const glm::vec2 pos = (sprite->get_position() - sgroup->get_position())
+                                  / sgroup->get_scale();
             glm::mat4 modelMat = glm::translate(glm::mat4(), {pos.x,pos.y, 0})
                                 * glm::rotate(glm::mat4(), sprite->get_rotation(),
                                               {0.0f, 0.0f, -1.0f})
@@ -321,8 +325,8 @@ void Renderer::render_string_box(Font const* font, const std::wstring wstr, cons
 
 
 void Renderer::render_string_line(Font const* font, const std::wstring wstr, const Color& color,
-                                  const glm::vec2& position, const glm::vec2& size, float rotation,
-                                  StringAlign align)
+                                  const glm::vec2& position, const glm::vec2& size,
+                                  float rotation, StringAlign align)
 {
     float totalWidth = 0;
     for(unsigned int i = 0; i < wstr.size(); ++i)
@@ -530,10 +534,33 @@ void Renderer::init_gl()
 
     textureShader.reset(new Shader("res/common/shader/texture.fragmentshader", GL_FRAGMENT_SHADER,
                                    "res/common/shader/texture.vertexshader", GL_VERTEX_SHADER));
+}
 
-    projectionMatrix = glm::ortho(-1,1,-1,1);
 
-    viewScale.x = viewScale.y = 1;
+void Renderer::set_render_target_screen()
+{
+    usingFramebuffer = false;
+
+    Framebuffer::unbind();
+
+    glViewport(0, 0, width, height);
+    const double f = double(width) / double(height);
+    projectionMatrix = glm::ortho(-f, f, -1.0, 1.0);
+    viewScale.x = f;
+    viewScale.y = 1.0f;
+}
+
+
+void Renderer::set_render_target(const Framebuffer& fb)
+{
+    usingFramebuffer = true;
+
+    fb.bind();
+    glViewport(0, 0, fb.get_width(), fb.get_height());
+    const double f = fb.get_width() / fb.get_height();
+    projectionMatrix = glm::ortho(-f, f, -1.0, 1.0);
+    viewScale.x = f;
+    viewScale.y = 1.0f;
 }
 
 
@@ -553,10 +580,12 @@ glm::vec2 Renderer::get_view_scale() const
 
 void Renderer::resize()
 {
-    glViewport(0, 0, width, height);
-    const double f = double(width) / double(height);
-
-    projectionMatrix = glm::ortho(-f, f, -1.0, 1.0);
-    viewScale.x = f;
-    viewScale.y = 1.0f;
+    if(!usingFramebuffer)
+    {
+        glViewport(0, 0, width, height);
+        const double f = double(width) / double(height);
+        projectionMatrix = glm::ortho(-f, f, -1.0, 1.0);
+        viewScale.x = f;
+        viewScale.y = 1.0f;
+    }
 }

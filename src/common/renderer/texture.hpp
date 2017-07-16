@@ -31,6 +31,7 @@ public:
     std::string get_path() const;
     unsigned int get_width() const;
     unsigned int get_height() const;
+    GLuint get_texture() const;
 
     // Return true if Texture has been read from a file with success
     bool is_loaded() const;
