@@ -5,6 +5,7 @@ namespace
 {
     unsigned int statusLength = 0;
     bool isStatus = false;
+    bool isEnabled = true;
 }
 
 
@@ -26,4 +27,22 @@ void set_status(unsigned int l)
 {
     isStatus = true;
     statusLength = l;
+}
+
+
+void enable_print()
+{
+    isEnabled = true;
+}
+
+
+void disable_print()
+{
+    isEnabled = false;
+}
+
+
+bool is_print_enabled()
+{
+    return isEnabled;
 }

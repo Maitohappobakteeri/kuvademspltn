@@ -9,6 +9,9 @@
 void clear_status();
 void set_status(unsigned int l);
 
+void enable_print();
+void disable_print();
+bool is_print_enabled();
 
 template <class P>
 void insert_all(std::ostream& ostream, const P& insertThis)
@@ -28,6 +31,8 @@ void insert_all(std::ostream& ostream, const P& insertThis, Args... args)
 template <class... Args>
 void println(Args... args)
 {
+    if(!is_print_enabled()) return;
+
     clear_status();
     insert_all(std::cout, args...);
     std::cout << std::endl;
@@ -37,6 +42,8 @@ void println(Args... args)
 template <class... Args>
 void printstatus(Args... args)
 {
+    if(!is_print_enabled()) return;
+
     clear_status();
     std::stringstream sstream;
     insert_all(sstream, args...);
