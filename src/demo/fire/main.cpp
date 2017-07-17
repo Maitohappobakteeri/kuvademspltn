@@ -3,7 +3,7 @@
 #include "print.hpp"
 
 #include "rainbowcycle.hpp"
-#include "window.hpp"
+#include "demo.hpp"
 #include "renderer/renderer.hpp"
 
 #include <chrono>
@@ -37,57 +37,78 @@ void render_fire(Shader& shader, Buffer& buf, const Color& pcol, const Color& sc
 }
 
 
-int main()
+class FireDemo : public Demo
 {
-    println(PROJECT_NAME, " - fire");
+public:
 
-    // initialize rendering
-    SDL_Init(SDL_INIT_VIDEO);
-    Window* window = new Window();
-    Renderer* renderer = new Renderer();
-    window->set_resize_callback([renderer](unsigned int w, unsigned int h)
-                                {renderer->handle_resize(w,h);});
 
-    Shader* fireShader = new Shader("res/fire/shader/fireMult.fragmentshader", GL_FRAGMENT_SHADER,
-                                    "res/fire/shader/fire.vertexshader", GL_VERTEX_SHADER);
-
-    const GLfloat rectpoints[] =
+    FireDemo(bool useRoot)
+        :Demo(useRoot)
     {
-        -1.0,-1.0,0.0,
-        1.0,-1.0,0.0,
-        -1.0,1.0,0.0,
-        1.0f,1.0f,0.0
-    };
+         fireShader = new Shader("res/fire/shader/fireMult.fragmentshader", GL_FRAGMENT_SHADER,
+                                        "res/fire/shader/fire.vertexshader", GL_VERTEX_SHADER);
 
-    Buffer* rectTriangleStrip = new Buffer();
-    rectTriangleStrip->buffer_data(GL_ARRAY_BUFFER, rectpoints,
-                                   sizeof(rectpoints), GL_STATIC_DRAW);
+        const GLfloat rectpoints[] =
+        {
+            -1.0,-1.0,0.0,
+            1.0,-1.0,0.0,
+            -1.0,1.0,0.0,
+            1.0f,1.0f,0.0
+        };
 
-    RainbowCycle rainbow1;
-    RainbowCycle rainbow2;
-    rainbow1.advance(1.0f);
-    // render fire
-    unsigned int oldTime = 0;
-    while(!window->handle_events())
+        rectTriangleStrip = new Buffer();
+        rectTriangleStrip->buffer_data(GL_ARRAY_BUFFER, rectpoints,
+                                       sizeof(rectpoints), GL_STATIC_DRAW);
+
+        rainbow1.advance(1.0f);
+    }
+
+
+    virtual ~FireDemo()
+    {
+        delete fireShader;
+        delete rectTriangleStrip;
+    }
+
+
+protected:
+
+
+    virtual bool update(float step) override
+    {
+        rainbow1.advance(step);
+        rainbow2.advance(step);
+        return false;
+    }
+
+
+    virtual void render() override
     {
         renderer->clear_screen();
         render_fire(*fireShader, *rectTriangleStrip, rainbow1.get_color(), rainbow2.get_color(),
                     renderer->get_projection_matrix());
-        window->display();
-
-        unsigned int newTime = SDL_GetTicks();
-        float step = (newTime - oldTime) / 1000.0f;
-        oldTime = newTime;
-        rainbow1.advance(step);
-        rainbow2.advance(step);
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
-    // cleanup
-    delete fireShader;
-    delete rectTriangleStrip;
-    delete renderer;
-    delete window;
-    SDL_Quit();
+
+private:
+
+    Shader* fireShader;
+    Buffer* rectTriangleStrip;
+    RainbowCycle rainbow1;
+    RainbowCycle rainbow2;
+};
+
+
+int main(int argc, char* argv[])
+{
+    println(PROJECT_NAME, " - fire");
+
+    bool isScreensaver = false;
+    if(argc == 2 && std::string(argv[1]) == "-root")
+    {
+        isScreensaver = true;
+    }
+
+    FireDemo demo(isScreensaver);
+    exit(demo.run());
 }
