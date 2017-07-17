@@ -93,6 +93,7 @@ set(COMMON_SOURCE_FILES
     src/common/renderer/shader.cpp
     src/common/renderer/texture.cpp
     src/common/renderer/buffer.cpp
+    src/common/renderer/framebuffer.cpp
     src/common/renderer/dynamicbox.cpp
     src/common/renderer/sprite.cpp
     src/common/renderer/spritegroup.cpp
@@ -117,3 +118,4 @@ target_link_libraries(${COMMON_TARGET} strkilxprs)
 
 include(src/demo/text/text.cmake)
 include(src/demo/sprite/sprite.cmake)
+include(src/demo/fire/fire.cmake)
