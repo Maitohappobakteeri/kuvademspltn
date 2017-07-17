@@ -5,6 +5,7 @@
 #include "project.hpp"
 
 #include "window.hpp"
+#include "xwindow.hpp"
 #include "renderer/renderer.hpp"
 #include "renderer/dynamicbox.hpp"
 
@@ -36,7 +37,7 @@ class Demo
 {
 public:
 
-    Demo();
+    Demo(bool useXWindow=false);
     ~Demo();
 
     int run();
@@ -49,7 +50,13 @@ protected:
     virtual void handle_keydown(SDL_Keycode k);
     virtual void handle_keyup(SDL_Keycode k);
 
-    Window* window;
+    bool usingXWindow;
+    union
+    {
+        Window* window;
+        XWindow* xwindow;
+    } window;
+
     Renderer* renderer;
     std::shared_ptr<Font> font;
 
@@ -69,7 +76,7 @@ private:
 
     bool update_demo();
 
-    bool initialize_rendering();
+    bool initialize_rendering(bool useXWindow);
     void cleanup_rendering();
 
     void render_info();

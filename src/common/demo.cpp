@@ -19,12 +19,14 @@ namespace
 }
 
 
-Demo::Demo()
-     :window(nullptr), renderer(nullptr), renderFreq(0), updateFreq(0),
+Demo::Demo(bool useXWindow)
+     :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0),
       updateRate(60), renderDemoInfo(true)
 {
+    if(useXWindow) disable_print();
+
     println("initializing rendering");
-    initialize_rendering();
+    initialize_rendering(useXWindow);
 }
 
 
@@ -47,7 +49,16 @@ int Demo::run()
 
         render();
         if(renderDemoInfo) render_info();
-        window->display();
+
+        if(usingXWindow)
+        {
+            window.xwindow->display();
+        }
+        else
+        {
+            window.window->display();
+        }
+
         renderFreqCounter.update(SDL_GetTicks(), renderFreq);
 
         // runtime information print
@@ -61,10 +72,19 @@ int Demo::run()
 }
 
 
-bool Demo::initialize_rendering()
+bool Demo::initialize_rendering(bool useXWindow)
 {
     SDL_Init(SDL_INIT_VIDEO);
-    window = new Window();
+
+    usingXWindow = useXWindow;
+    if(usingXWindow)
+    {
+        window.xwindow = new XWindow(true);
+    }
+    else
+    {
+        window.window = new Window();
+    }
 
     try
     {
@@ -75,15 +95,24 @@ bool Demo::initialize_rendering()
         return false;
     }
 
-    window->set_resize_callback(
-            [this](unsigned int w, unsigned int h){renderer->handle_resize(w,h);}
-        );
-    window->set_keydown_callback(
-            [this](SDL_Keycode k){handle_keydown(k);}
-        );
-    window->set_keyup_callback(
-            [this](SDL_Keycode k){handle_keyup(k);}
-        );
+    if(usingXWindow)
+    {
+        window.xwindow->set_resize_callback(
+                            [this](unsigned int w, unsigned int h){renderer->handle_resize(w,h);}
+                        );
+    }
+    else
+    {
+        window.window->set_resize_callback(
+                            [this](unsigned int w, unsigned int h){renderer->handle_resize(w,h);}
+                        );
+        window.window->set_keydown_callback(
+                            [this](SDL_Keycode k){handle_keydown(k);}
+                        );
+        window.window->set_keyup_callback(
+                            [this](SDL_Keycode k){handle_keyup(k);}
+                        );
+    }
 
     font = renderer->load_font(RES_COMMON_FONT_INCONSOLATA_REGULAR, 32);
 
@@ -98,7 +127,16 @@ void Demo::cleanup_rendering()
 {
     font.reset();
     delete renderer;
-    delete window;
+
+    if(usingXWindow)
+    {
+        delete window.xwindow;
+    }
+    else
+    {
+        delete window.window;
+    }
+
     SDL_Quit();
 }
 
@@ -146,9 +184,19 @@ bool Demo::update_demo()
         }
         ++updateCounter;
 
-        if(window->handle_events())
+        if(usingXWindow)
         {
-            return true;
+            if(window.xwindow->handle_events())
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if(window.window->handle_events())
+            {
+                return true;
+            }
         }
 
         updateTimeCounter -= timeBetweenUpdates;
