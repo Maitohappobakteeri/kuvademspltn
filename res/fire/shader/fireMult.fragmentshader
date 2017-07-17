@@ -1,0 +1,36 @@
+#version 130
+
+in vec3 position;
+
+uniform vec4 primaryColor;
+uniform vec4 secondaryColor;
+uniform float time;
+
+out vec4 color;
+
+void main()
+{
+    float distance = (position.x * position.x
+                       + position.y * position.y
+                       + position.z * position.z);
+
+    float height = (1 + position.y) / 2;
+    float height2p = height * height;
+
+    float i = distance - height*(0.5 - abs(position.x))
+              + 0.1*height2p*cos(height * 15 + time * 10)
+              + 0.05*height2p*cos(height * 30 - time * 30)
+              + 0.1*height*sin(position.x*3 + time * 13)
+              + 0.07*height2p*pow(sin(abs(position.x)*20 + time * 12), 2)
+              + 0.1*height2p*sin(position.x*20 - time * 6)
+              + 0.05*height2p*sin(position.x*20 + time * 8);
+    if(i <= 0.1)
+    {
+        color.a = sqrt((0.1 - i)*10);
+        color.rgb = primaryColor.rgb * color.a + secondaryColor.rgb * (1 - color.a);
+    }
+    else
+    {
+        color = vec4(0,0,0,0);
+    }
+}

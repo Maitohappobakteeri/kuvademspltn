@@ -9,7 +9,8 @@
 #include <thread>
 
 
-void render_fire(Shader& shader, Buffer& buf, const Color& col, const glm::mat4& projectionMatrix)
+void render_fire(Shader& shader, Buffer& buf, const Color& pcol, const Color& scol,
+                 const glm::mat4& projectionMatrix)
 {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -21,9 +22,11 @@ void render_fire(Shader& shader, Buffer& buf, const Color& col, const glm::mat4&
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
 
     static int mvpId = shader.get_uniform_location("mvpMatrix");
-    static int color = shader.get_uniform_location("inColor");
+    static int primColor = shader.get_uniform_location("primaryColor");
+    static int secColor = shader.get_uniform_location("secondaryColor");
     static int timeId = shader.get_uniform_location("time");
-    glUniform4f(color, col.r, col.g, col.b, col.a);
+    glUniform4f(primColor, pcol.r, pcol.g, pcol.b, pcol.a);
+    glUniform4f(secColor, scol.r, scol.g, scol.b, scol.a);
     glUniform1f(timeId, SDL_GetTicks() / 1000.0f);
 
     glm::mat4 modelMat = glm::mat4();
@@ -44,7 +47,7 @@ int main()
     window->set_resize_callback([renderer](unsigned int w, unsigned int h)
                                 {renderer->handle_resize(w,h);});
 
-    Shader* fireShader = new Shader("res/fire/shader/fire.fragmentshader", GL_FRAGMENT_SHADER,
+    Shader* fireShader = new Shader("res/fire/shader/fireMult.fragmentshader", GL_FRAGMENT_SHADER,
                                     "res/fire/shader/fire.vertexshader", GL_VERTEX_SHADER);
 
     const GLfloat rectpoints[] =
@@ -63,7 +66,8 @@ int main()
     while(!window->handle_events())
     {
         renderer->clear_screen();
-        render_fire(*fireShader, *rectTriangleStrip, {1,0,0,1}, renderer->get_projection_matrix());
+        render_fire(*fireShader, *rectTriangleStrip, {1,0,0.5,1}, {1,0.3,1,1},
+                    renderer->get_projection_matrix());
         window->display();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
