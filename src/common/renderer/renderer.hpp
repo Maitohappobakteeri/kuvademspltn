@@ -83,6 +83,8 @@ public:
     void handle_resize(unsigned int newWidth, unsigned int newHeight);
     glm::vec2 get_view_scale() const;
 
+    glm::mat4 get_projection_matrix() const;
+
 private:
 
     void delete_texture(Texture* texture);

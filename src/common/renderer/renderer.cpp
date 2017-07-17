@@ -601,6 +601,11 @@ glm::vec2 Renderer::get_view_scale() const
 }
 
 
+glm::mat4 Renderer::get_projection_matrix() const
+{
+    return projectionMatrix;
+}
+
 void Renderer::resize()
 {
     if(!usingFramebuffer)
