@@ -16,7 +16,7 @@ Renderer::Renderer()
     init_gl();
     Font::initialize_freetype();
 
-    placeholderTexture.reset(new Texture(RES_COMMON_PLACEHOLDER));
+    placeholderTexture.reset(new Texture(get_res_from_ID(RES_COMMON_PLACEHOLDER)));
 
     const std::string fontFilename = get_res_from_ID(RES_COMMON_FONT_INCONSOLATA_REGULAR);
     placeholderFont = std::shared_ptr<Font>(new Font(fontFilename, 32));
@@ -172,7 +172,8 @@ void Renderer::delete_spritegroup(SpriteGroup* sgroup)
 
 void Renderer::clear_screen()
 {
-    glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
+    // glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
+    glClearColor(0, 0, 0, 1.0f);
     glClearDepth(1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -418,6 +419,30 @@ void Renderer::render_texture(Texture const* texture, const glm::vec2& position,
 }
 
 
+void Renderer::render_rectangle(const Color& color, const glm::vec2& position,
+                                const glm::vec2& size, float rotation)
+{
+    glEnableVertexAttribArray(0);
+
+    rectTriangleStrip->bind(GL_ARRAY_BUFFER);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
+
+    colorShader->use();
+
+    static int mvpId = colorShader->get_uniform_location("mvpMatrix");
+    static int colId = colorShader->get_uniform_location("inColor");
+
+    glUniform4f(colId, color.r, color.g, color.b, color.a);
+
+    glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x, position.y, 0})
+                         * glm::rotate(glm::mat4(),rotation, {0.0f, 0.0f, -1.0f})
+                         * glm::scale(glm::mat4(), {size.x, size.y, 1});
+    glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+
 void Renderer::render_rectangle_outline(const Color& color, const glm::vec2& position,
                                         const glm::vec2& size, float rotation)
 {
@@ -430,8 +455,6 @@ void Renderer::render_rectangle_outline(const Color& color, const glm::vec2& pos
 
     static int mvpId = colorShader->get_uniform_location("mvpMatrix");
     static int colId = colorShader->get_uniform_location("inColor");
-
-    static glm::mat4 plainMatrix;
 
     glUniform4f(colId, color.r, color.g, color.b, color.a);
 

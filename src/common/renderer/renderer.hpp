@@ -71,6 +71,8 @@ public:
     void render_texture(Texture const* texture, const glm::vec2& position,
                         const glm::vec2& size, float rotation);
 
+    void render_rectangle(const Color& color, const glm::vec2& position,
+                          const glm::vec2& size, float rotation);
     void render_rectangle_outline(const Color& color, const glm::vec2& position,
                                   const glm::vec2& size, float rotation);
     void render_circle(const Color& color, const glm::vec2& position, const glm::vec2& size);
