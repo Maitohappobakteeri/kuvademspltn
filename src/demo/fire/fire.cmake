@@ -1,5 +1,6 @@
 set(FIRE_SOURCE_FILES
     src/demo/fire/main.cpp
+    src/demo/fire/rainbowcycle.cpp
 )
 
 set(FIRE_TARGET fire)

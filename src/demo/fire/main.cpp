@@ -2,6 +2,7 @@
 #include "project.hpp"
 #include "print.hpp"
 
+#include "rainbowcycle.hpp"
 #include "window.hpp"
 #include "renderer/renderer.hpp"
 
@@ -62,13 +63,24 @@ int main()
     rectTriangleStrip->buffer_data(GL_ARRAY_BUFFER, rectpoints,
                                    sizeof(rectpoints), GL_STATIC_DRAW);
 
+    RainbowCycle rainbow1;
+    RainbowCycle rainbow2;
+    rainbow1.advance(1.0f);
     // render fire
+    unsigned int oldTime = 0;
     while(!window->handle_events())
     {
         renderer->clear_screen();
-        render_fire(*fireShader, *rectTriangleStrip, {1,0,0.5,1}, {1,0.3,1,1},
+        render_fire(*fireShader, *rectTriangleStrip, rainbow1.get_color(), rainbow2.get_color(),
                     renderer->get_projection_matrix());
         window->display();
+
+        unsigned int newTime = SDL_GetTicks();
+        float step = (newTime - oldTime) / 1000.0f;
+        oldTime = newTime;
+        rainbow1.advance(step);
+        rainbow2.advance(step);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
