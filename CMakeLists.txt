@@ -115,6 +115,7 @@ target_link_libraries(${COMMON_TARGET} ${GLEW_LIBRARIES})
 target_link_libraries(${COMMON_TARGET} ${OPENGL_gl_LIBRARY})
 target_link_libraries(${COMMON_TARGET} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(${COMMON_TARGET} ${FREETYPE_LIBRARIES})
+target_link_libraries(${COMMON_TARGET} boost_program_options)
 target_link_libraries(${COMMON_TARGET} strkilxprs)
 
 include(src/demo/text/text.cmake)
