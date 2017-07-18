@@ -9,6 +9,8 @@
 #include "renderer/renderer.hpp"
 #include "renderer/dynamicbox.hpp"
 
+#include <boost/program_options.hpp>
+
 
 class FrequencyCounter
 {
@@ -41,7 +43,6 @@ public:
     {
         bool printHelp = false;
         bool shouldRun = true;
-        std::wstring command;
 
         bool disablePrint = false;
 
@@ -49,10 +50,10 @@ public:
         int rootWindowID = -1;
     };
 
-    static Args parse_args(int argc, char* argv[]);
-    static void print_options();
+    static Args create_args(const boost::program_options::variables_map& vm);
+    static boost::program_options::options_description options();
 
-    Demo(const Args& args);
+    Demo(const Args& args, const std::wstring& command);
     ~Demo();
 
     int run();
@@ -102,5 +103,10 @@ private:
 
     void render_info();
 };
+
+
+std::pair<std::string, std::string> is_wid_option(const std::string& s);
+std::wstring join_command(int argc, char* argv[]);
+
 
 #endif

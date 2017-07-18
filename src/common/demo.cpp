@@ -5,8 +5,6 @@
 #include "loadsprite.hpp"
 #include "print.hpp"
 
-#include <boost/program_options.hpp>
-
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -20,20 +18,10 @@ namespace
     }
 
 
-    std::pair<std::string, std::string> find_wid_option(const std::string& s)
-    {
-        if(s.find("-window-id") == 0)
-        {
-            return std::make_pair("window-id", std::string());
-        }
-        return std::make_pair(std::string(), std::string());
-    }
-
-
     boost::program_options::options_description init_option_desc()
     {
         namespace opt = boost::program_options;
-        opt::options_description desc("Demo options:");
+        opt::options_description desc("Allowed options");
         desc.add_options()
             ("help", "show this")
             ("root", "use virtual root window")
@@ -44,18 +32,17 @@ namespace
 
     boost::program_options::options_description get_option_desc()
     {
-        static boost::program_options::options_description desc = init_option_desc();
+        namespace opt = boost::program_options;
+        static opt::options_description desc = init_option_desc();
         return desc;
     }
 }
 
 
-Demo::Demo(const Demo::Args& args)
+Demo::Demo(const Demo::Args& args, const std::wstring& command)
      :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0),
-      updateRate(60), renderDemoInfo(true)
+      updateRate(60), renderDemoInfo(true), command(command)
 {
-    command = args.command;
-
     bool useXWindow = args.useRootWindow;
 
     if(args.disablePrint) disable_print();
@@ -125,16 +112,8 @@ int Demo::run()
 }
 
 
-Demo::Args Demo::parse_args(int argc, char* argv[])
+Demo::Args Demo::create_args(const boost::program_options::variables_map& vm)
 {
-    namespace opt = boost::program_options;
-    opt::options_description desc = get_option_desc();
-
-    opt::variables_map vm;
-    opt::store(opt::command_line_parser(argc, argv).options(desc).extra_parser(find_wid_option)
-               .run(), vm);
-    opt::notify(vm);
-
     Args args;
 
     if(vm.count("help"))
@@ -154,25 +133,13 @@ Demo::Args Demo::parse_args(int argc, char* argv[])
         }
     }
 
-    if(argc > 0)
-    {
-        std::string arg(argv[0]);
-        args.command.append(arg.begin(), arg.end());
-    }
-    for(int i = 1; i < argc; ++i)
-    {
-        args.command += L" ";
-        std::string arg(argv[i]);
-        args.command.append(arg.begin(), arg.end());
-    }
-
     return args;
 }
 
 
-void Demo::print_options()
+boost::program_options::options_description Demo::options()
 {
-    println(get_option_desc());
+    return get_option_desc();
 }
 
 
@@ -271,12 +238,12 @@ void Demo::render_info()
 
     infoTextBox.update(*renderer);
 
-    renderer->render_string_line(font.get(),
-                                 command,
-                                 {1,1,0.8f},
-                                 infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*0}),
-                                 infoTextBox.box_scale({1.0f, lineHeight}), 0,
-                                 Renderer::StringAlign::RIGHT);
+    renderer->render_string_box(font.get(),
+                                command,
+                                {1,1,0.8f},
+                                infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*0}),
+                                infoTextBox.box_scale({1.0f, lineHeight}), 0,
+                                Renderer::StringAlign::RIGHT);
 
     renderer->render_string_line(font.get(),
                                  std::wstring(L"Update: ") + std::to_wstring(updateFreq),
@@ -358,4 +325,32 @@ void Demo::handle_keydown(SDL_Keycode k)
 void Demo::handle_keyup(SDL_Keycode k)
 {
 
+}
+
+
+std::pair<std::string, std::string> is_wid_option(const std::string& s)
+{
+    if(s.find("-window-id") == 0)
+    {
+        return std::make_pair("window-id", std::string());
+    }
+    return std::make_pair(std::string(), std::string());
+}
+
+
+std::wstring join_command(int argc, char* argv[])
+{
+    std::wstring command;
+    if(argc > 0)
+    {
+        std::string arg(argv[0]);
+        command.append(arg.begin(), arg.end());
+    }
+    for(int i = 1; i < argc; ++i)
+    {
+        command += L" ";
+        std::string arg(argv[i]);
+        command.append(arg.begin(), arg.end());
+    }
+    return command;
 }
