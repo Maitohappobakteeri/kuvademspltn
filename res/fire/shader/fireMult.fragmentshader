@@ -17,7 +17,7 @@ void main()
     float height = (1 + position.y) / 2;
     float height2p = height * height;
 
-    float i = distance - height*(0.5 - abs(position.x))
+    float i = distance - height*(0.5 - position.x*position.x)
               + 0.1*height2p*cos(height * 15 + time * 10)
               + 0.05*height2p*cos(height * 30 - time * 30)
               + 0.1*height*sin(position.x*3 + time * 13)
