@@ -61,6 +61,8 @@ public:
                                        sizeof(rectpoints), GL_STATIC_DRAW);
 
         rainbow1.advance(1.0f);
+
+        renderDemoInfo = false;
     }
 
 
