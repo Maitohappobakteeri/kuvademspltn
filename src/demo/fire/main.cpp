@@ -42,8 +42,8 @@ class FireDemo : public Demo
 public:
 
 
-    FireDemo(const Demo::Args& args)
-        :Demo(args)
+    FireDemo(const Demo::Args& args, const std::wstring& command)
+        :Demo(args, command)
     {
          fireShader = new Shader("res/fire/shader/fireMult.fragmentshader", GL_FRAGMENT_SHADER,
                                         "res/fire/shader/fire.vertexshader", GL_VERTEX_SHADER);
@@ -103,21 +103,34 @@ private:
 
 int main(int argc, char* argv[])
 {
-    Demo::Args args = Demo::parse_args(argc, argv);
+    namespace opt = boost::program_options;
 
+    // create options
+    opt::options_description desc(Demo::options());
+
+    // parse options
+    opt::variables_map vm;
+    opt::store(opt::command_line_parser(argc, argv).options(desc).extra_parser(is_wid_option)
+               .run(), vm);
+    opt::notify(vm);
+
+    // create Demo::Args from options
+    Demo::Args args = Demo::create_args(vm);
+
+    // Handle basic options
     if(args.disablePrint)
     {
         disable_print();
     }
     if(args.printHelp)
     {
-        Demo::print_options();
+        println(desc);
     }
 
     if(args.shouldRun)
     {
         println(PROJECT_NAME, " - fire");
-        FireDemo demo(args);
+        FireDemo demo(args, join_command(argc, argv));
         exit(demo.run());
     }
     else
