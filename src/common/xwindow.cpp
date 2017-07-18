@@ -16,6 +16,7 @@
 #include <thread>
 #include <iostream>
 #include <cstring>
+#include <csignal>
 
 
 namespace
@@ -40,6 +41,11 @@ namespace
         None
     };
 
+    bool terminated = false;
+    void termHandler(int signum)
+    {
+        terminated = true;
+    }
 };
 
 
@@ -60,6 +66,9 @@ struct XWindow::xvar
 XWindow::XWindow(bool useRoot)
     :ownsWindow(!useRoot), var(new xvar())
 {
+    signal(SIGTERM, termHandler);
+    signal(SIGINT, termHandler);
+
     init_display();
 
     if(useRoot)
@@ -81,6 +90,9 @@ XWindow::XWindow(bool useRoot)
 XWindow::XWindow(int wid)
     :ownsWindow(false), var(new xvar())
 {
+    signal(SIGTERM, termHandler);
+    signal(SIGINT, termHandler);
+
     init_display();
     var->window = wid;
     get_visual_from_window();
@@ -155,14 +167,14 @@ bool XWindow::handle_events()
                 break;
         }
     }
-    return shouldStop;
+    return shouldStop || terminated;
 }
 
 
 void XWindow::set_resize_callback(std::function<void(unsigned int, unsigned int)> callbk)
 {
     resizeCallback = callbk;
-    
+
     XWindowAttributes gwa;
     XGetWindowAttributes(var->display, var->window, &gwa);
     if(resizeCallback)
