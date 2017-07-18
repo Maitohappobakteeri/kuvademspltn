@@ -17,7 +17,9 @@ namespace
 }
 
 
-SpriteDemo::SpriteDemo(const std::string& spritePath)
+SpriteDemo::SpriteDemo(const std::string& spritePath, const Demo::Args& args,
+                       const std::wstring& command)
+    :Demo(args, command)
 {
     spriteModel = read_spritedata_from_file(renderer, spritePath);
     renderer->create_spritegroup()->create_sprite(create_sprite(spriteModel));

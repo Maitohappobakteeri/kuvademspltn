@@ -12,7 +12,7 @@ class SpriteDemo : public Demo
 {
 public:
 
-    SpriteDemo(const std::string& spritePath);
+    SpriteDemo(const std::string& spritePath, const Demo::Args& args, const std::wstring& command);
     ~SpriteDemo();
 
 protected:
