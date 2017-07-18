@@ -1,5 +1,8 @@
 #include "texture.hpp"
 
+
+#include "print.hpp"
+
 #include <png.h>
 
 #include <iostream>
@@ -162,7 +165,7 @@ GLuint Texture::load_texture(const std::string& filePath)
 
     const GLuint INVALID_TEXTURE = 0;
 
-    std::cout << "loading texture: " << filePath << std::endl;
+    println("loading texture: ", filePath);
 
     // open texture file
     std::ifstream textureFile(filePath, std::ifstream::binary);

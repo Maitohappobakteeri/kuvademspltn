@@ -2,6 +2,7 @@
 
 
 #include "resid.hpp"
+#include "print.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
@@ -497,7 +498,7 @@ void Renderer::init_gl()
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-    std::cout << "OpenGL version " << major << "." << minor << std::endl;
+    println("OpenGL version ", major, ".", minor);
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);

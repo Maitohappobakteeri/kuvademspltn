@@ -1,5 +1,8 @@
 #include "shader.hpp"
 
+
+#include "print.hpp"
+
 #include <fstream>
 #include <iostream>
 
@@ -24,7 +27,7 @@ GLuint Shader::get_uniform_location(const std::string& name)
 
 GLuint Shader::load_shader(const std::string& filePath, GLenum shaderType)
 {
-    std::cout << "loading shader: " << filePath << std::endl;
+    println("loading shader: ", filePath);
 
     std::ifstream file(filePath);
     if(file.fail())
@@ -55,7 +58,7 @@ GLuint Shader::load_shader(const std::string& filePath, GLenum shaderType)
         return 0;
     }
 
-    std::cout << "compiling shader: " << filePath << std::endl;
+    println("compiling shader: ", filePath);
 
     glShaderSource(shader, 1, &buffer, &length);
     glCompileShader(shader);
@@ -101,7 +104,7 @@ bool Shader::check_link_shader_program_error(GLuint program)
 
 GLuint Shader::create_shader_program(const std::vector<GLuint>& shaders)
 {
-    std::cout << "linking shader program" << std::endl;
+    println("linking shader program");
 
     GLuint program = glCreateProgram();
 
