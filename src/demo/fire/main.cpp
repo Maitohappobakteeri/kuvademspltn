@@ -42,8 +42,8 @@ class FireDemo : public Demo
 public:
 
 
-    FireDemo(bool useRoot)
-        :Demo(useRoot)
+    FireDemo(const Demo::Args& args)
+        :Demo(args)
     {
          fireShader = new Shader("res/fire/shader/fireMult.fragmentshader", GL_FRAGMENT_SHADER,
                                         "res/fire/shader/fire.vertexshader", GL_VERTEX_SHADER);
@@ -103,14 +103,25 @@ private:
 
 int main(int argc, char* argv[])
 {
-    println(PROJECT_NAME, " - fire");
+    Demo::Args args = Demo::parse_args(argc, argv);
 
-    bool isScreensaver = false;
-    if(argc == 2 && std::string(argv[1]) == "-root")
+    if(args.disablePrint)
     {
-        isScreensaver = true;
+        disable_print();
+    }
+    if(args.printHelp)
+    {
+        Demo::print_options();
     }
 
-    FireDemo demo(isScreensaver);
-    exit(demo.run());
+    if(args.shouldRun)
+    {
+        println(PROJECT_NAME, " - fire");
+        FireDemo demo(args);
+        exit(demo.run());
+    }
+    else
+    {
+        exit(0);
+    }
 }
