@@ -38,6 +38,7 @@ class Demo
 public:
 
     Demo(bool useXWindow=false);
+    Demo(int wid);
     ~Demo();
 
     int run();
@@ -76,7 +77,12 @@ private:
 
     bool update_demo();
 
-    bool initialize_rendering(bool useXWindow);
+    bool initialize_window();
+    bool initialize_xwindow(bool useRoot);
+    bool initialize_xwindow(int rootwid);
+    void set_window_callbacks();
+    
+    bool initialize_rendering();
     void cleanup_rendering();
 
     void render_info();

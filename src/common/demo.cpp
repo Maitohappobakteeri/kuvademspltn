@@ -25,9 +25,29 @@ Demo::Demo(bool useXWindow)
 {
     if(useXWindow) disable_print();
 
+    println("creating window");
+    if(!useXWindow)
+        initialize_window();
+    else
+        initialize_xwindow(true);
+
     println("initializing rendering");
-    initialize_rendering(useXWindow);
+    initialize_rendering();
 }
+
+
+Demo::Demo(int wid)
+     :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0),
+      updateRate(60), renderDemoInfo(true)
+{
+    disable_print();
+
+    println("creating window");
+    initialize_xwindow(wid);
+    println("initializing rendering");
+    initialize_rendering();
+}
+
 
 
 Demo::~Demo()
@@ -72,29 +92,34 @@ int Demo::run()
 }
 
 
-bool Demo::initialize_rendering(bool useXWindow)
+bool Demo::initialize_window()
 {
+    usingXWindow = false;
+
     SDL_Init(SDL_INIT_VIDEO);
+    window.window = new Window();
+    return true;
+}
 
-    usingXWindow = useXWindow;
-    if(usingXWindow)
-    {
-        window.xwindow = new XWindow(true);
-    }
-    else
-    {
-        window.window = new Window();
-    }
 
-    try
-    {
-        renderer = new Renderer();
-    }
-    catch(std::runtime_error& e)
-    {
-        return false;
-    }
+bool Demo::initialize_xwindow(bool useRoot)
+{
+    usingXWindow = true;
+    window.xwindow = new XWindow(useRoot);
+    return true;
+}
 
+
+bool Demo::initialize_xwindow(int rootwid)
+{
+    usingXWindow = true;
+    window.xwindow = new XWindow(rootwid);
+    return true;
+}
+
+
+void Demo::set_window_callbacks()
+{
     if(usingXWindow)
     {
         window.xwindow->set_resize_callback(
@@ -113,6 +138,21 @@ bool Demo::initialize_rendering(bool useXWindow)
                             [this](SDL_Keycode k){handle_keyup(k);}
                         );
     }
+}
+
+
+bool Demo::initialize_rendering()
+{
+    try
+    {
+        renderer = new Renderer();
+    }
+    catch(std::runtime_error& e)
+    {
+        return false;
+    }
+
+    set_window_callbacks();
 
     font = renderer->load_font(RES_COMMON_FONT_INCONSOLATA_REGULAR, 32);
 
