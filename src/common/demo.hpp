@@ -37,8 +37,22 @@ class Demo
 {
 public:
 
-    Demo(bool useXWindow=false);
-    Demo(int wid);
+    struct Args
+    {
+        bool printHelp = false;
+        bool shouldRun = true;
+        std::wstring command;
+
+        bool disablePrint = false;
+
+        bool useRootWindow = false;
+        int rootWindowID = -1;
+    };
+
+    static Args parse_args(int argc, char* argv[]);
+    static void print_options();
+
+    Demo(const Args& args);
     ~Demo();
 
     int run();
@@ -51,7 +65,6 @@ protected:
     virtual void handle_keydown(SDL_Keycode k);
     virtual void handle_keyup(SDL_Keycode k);
 
-    bool usingXWindow;
     union
     {
         Window* window;
@@ -70,8 +83,10 @@ protected:
     // runtime settings
     unsigned int updateRate; //updates in second
     bool renderDemoInfo;
+    bool usingXWindow;
 
     DynamicBox infoTextBox;
+    std::wstring command;
 
 private:
 
@@ -81,7 +96,7 @@ private:
     bool initialize_xwindow(bool useRoot);
     bool initialize_xwindow(int rootwid);
     void set_window_callbacks();
-    
+
     bool initialize_rendering();
     void cleanup_rendering();
 

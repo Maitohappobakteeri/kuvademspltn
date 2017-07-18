@@ -5,6 +5,8 @@
 #include "loadsprite.hpp"
 #include "print.hpp"
 
+#include <boost/program_options.hpp>
+
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -16,38 +18,69 @@ namespace
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+
+
+    std::pair<std::string, std::string> find_wid_option(const std::string& s)
+    {
+        if(s.find("-window-id") == 0)
+        {
+            return std::make_pair("window-id", std::string());
+        }
+        return std::make_pair(std::string(), std::string());
+    }
+
+
+    boost::program_options::options_description init_option_desc()
+    {
+        namespace opt = boost::program_options;
+        opt::options_description desc("Demo options:");
+        desc.add_options()
+            ("help", "show this")
+            ("root", "use virtual root window")
+            ("window-id", opt::value<std::string>(), "use window with ID as root window")
+        ;
+        return desc;
+    }
+
+    boost::program_options::options_description get_option_desc()
+    {
+        static boost::program_options::options_description desc = init_option_desc();
+        return desc;
+    }
 }
 
 
-Demo::Demo(bool useXWindow)
+Demo::Demo(const Demo::Args& args)
      :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0),
       updateRate(60), renderDemoInfo(true)
 {
-    if(useXWindow) disable_print();
+    command = args.command;
+
+    bool useXWindow = args.useRootWindow;
+
+    if(args.disablePrint) disable_print();
+    else                  enable_print();
 
     println("creating window");
     if(!useXWindow)
+    {
         initialize_window();
+    }
     else
-        initialize_xwindow(true);
+    {
+        if(args.rootWindowID != -1)
+        {
+            initialize_xwindow(args.rootWindowID);
+        }
+        else
+        {
+            initialize_xwindow(true);
+        }
+    }
 
     println("initializing rendering");
     initialize_rendering();
 }
-
-
-Demo::Demo(int wid)
-     :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0),
-      updateRate(60), renderDemoInfo(true)
-{
-    disable_print();
-
-    println("creating window");
-    initialize_xwindow(wid);
-    println("initializing rendering");
-    initialize_rendering();
-}
-
 
 
 Demo::~Demo()
@@ -89,6 +122,57 @@ int Demo::run()
     // cleanup
     println("returning from demo");
     return 0;
+}
+
+
+Demo::Args Demo::parse_args(int argc, char* argv[])
+{
+    namespace opt = boost::program_options;
+    opt::options_description desc = get_option_desc();
+
+    opt::variables_map vm;
+    opt::store(opt::command_line_parser(argc, argv).options(desc).extra_parser(find_wid_option)
+               .run(), vm);
+    opt::notify(vm);
+
+    Args args;
+
+    if(vm.count("help"))
+    {
+        args.printHelp = true;
+        args.shouldRun = false;
+    }
+
+    if(vm.count("root") || (vm.count("window-id")))
+    {
+        args.useRootWindow = true;
+        args.disablePrint = true;
+
+        if(vm.count("window-id"))
+        {
+            args.rootWindowID = std::stoi(vm["window-id"].as<std::string>(), nullptr, 16);
+        }
+    }
+
+    if(argc > 0)
+    {
+        std::string arg(argv[0]);
+        args.command.append(arg.begin(), arg.end());
+    }
+    for(int i = 1; i < argc; ++i)
+    {
+        args.command += L" ";
+        std::string arg(argv[i]);
+        args.command.append(arg.begin(), arg.end());
+    }
+
+    return args;
+}
+
+
+void Demo::print_options()
+{
+    println(get_option_desc());
 }
 
 
@@ -188,16 +272,23 @@ void Demo::render_info()
     infoTextBox.update(*renderer);
 
     renderer->render_string_line(font.get(),
-                                 std::wstring(L"Update: ") + std::to_wstring(updateFreq),
+                                 command,
                                  {1,1,0.8f},
                                  infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*0}),
                                  infoTextBox.box_scale({1.0f, lineHeight}), 0,
                                  Renderer::StringAlign::RIGHT);
 
     renderer->render_string_line(font.get(),
-                                 std::wstring(L"Render: ") + std::to_wstring(renderFreq),
+                                 std::wstring(L"Update: ") + std::to_wstring(updateFreq),
                                  {1,1,0.8f},
                                  infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*1}),
+                                 infoTextBox.box_scale({1.0f, lineHeight}), 0,
+                                 Renderer::StringAlign::RIGHT);
+
+    renderer->render_string_line(font.get(),
+                                 std::wstring(L"Render: ") + std::to_wstring(renderFreq),
+                                 {1,1,0.8f},
+                                 infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*2}),
                                  infoTextBox.box_scale({1.0f, lineHeight}), 0,
                                  Renderer::StringAlign::RIGHT);
 }
