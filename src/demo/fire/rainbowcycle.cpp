@@ -5,6 +5,7 @@
 
 
 RainbowCycle::RainbowCycle()
+    :phase(0)
 {
 
 }
@@ -21,9 +22,9 @@ Color RainbowCycle::get_color() const
 {
     using std::sin;
     using std::cos;
-    return Color{(1.0f + sin(phase*1.1f))/2.0f,
-                 (1.0f + sin(phase*1.2f))/2.0f,
-                 (1.0f + sin(phase*1.3f))/2.0f};
+    return Color{(1.0f + sin(phase*1.25555f))/2.0f,
+                 (1.0f + sin(phase*1.20011f))/2.0f,
+                 (1.0f + sin(phase*1.333343f))/2.0f};
 }
 
 

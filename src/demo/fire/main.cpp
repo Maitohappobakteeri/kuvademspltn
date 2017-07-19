@@ -60,7 +60,7 @@ public:
         rectTriangleStrip->buffer_data(GL_ARRAY_BUFFER, rectpoints,
                                        sizeof(rectpoints), GL_STATIC_DRAW);
 
-        rainbow1.advance(1.0f);
+        rainbow1.advance(2.0f);
 
         renderDemoInfo = false;
     }

@@ -32,8 +32,9 @@ void main()
 
     if(i <= 0.1)
     {
-        color.a = sqrt((0.1 - i)*10);
-        color.rgb = primaryColor.rgb * color.a + secondaryColor.rgb * (1 - color.a);
+        float a = (0.1 - i)*10;
+        color.a = pow(a, 1/4);
+        color.rgb = primaryColor.rgb * a + secondaryColor.rgb * (1 - a);
     }
     else
     {
