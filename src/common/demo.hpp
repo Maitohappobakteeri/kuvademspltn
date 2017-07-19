@@ -60,11 +60,16 @@ public:
 
 protected:
 
+    virtual bool init();
+    virtual void cleanup();
+
     virtual bool update(float step) = 0;
     virtual void render() = 0;
 
     virtual void handle_keydown(SDL_Keycode k);
     virtual void handle_keyup(SDL_Keycode k);
+
+    virtual void handle_resize(unsigned int w, unsigned int h);
 
     union
     {
@@ -82,6 +87,7 @@ protected:
     unsigned int updateFreq;
 
     // runtime settings
+    Args args;
     unsigned int updateRate; //updates in second
     bool renderDemoInfo;
     bool usingXWindow;

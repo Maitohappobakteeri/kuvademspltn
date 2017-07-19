@@ -40,45 +40,23 @@ namespace
 
 
 Demo::Demo(const Demo::Args& args, const std::wstring& command)
-     :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0),
+     :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0), args(args),
       updateRate(60), renderDemoInfo(true), command(command)
 {
-    bool useXWindow = args.useRootWindow;
 
-    if(args.disablePrint) disable_print();
-    else                  enable_print();
-
-    println("creating window");
-    if(!useXWindow)
-    {
-        initialize_window();
-    }
-    else
-    {
-        if(args.rootWindowID != -1)
-        {
-            initialize_xwindow(args.rootWindowID);
-        }
-        else
-        {
-            initialize_xwindow(true);
-        }
-    }
-
-    println("initializing rendering");
-    initialize_rendering();
 }
 
 
 Demo::~Demo()
 {
-    println("releasing memory");
-    cleanup_rendering();
+
 }
 
 
 int Demo::run()
 {
+    init();
+
     // main loop
     println("starting main loop");
     bool gameRunning = true;
@@ -106,9 +84,44 @@ int Demo::run()
         short_sleep();
     }
 
-    // cleanup
+    cleanup();
+
     println("returning from demo");
     return 0;
+}
+
+
+bool Demo::init()
+{
+    bool useXWindow = args.useRootWindow;
+    println("creating window");
+    if(!useXWindow)
+    {
+        initialize_window();
+    }
+    else
+    {
+        if(args.rootWindowID != -1)
+        {
+            initialize_xwindow(args.rootWindowID);
+        }
+        else
+        {
+            initialize_xwindow(true);
+        }
+    }
+
+    println("initializing rendering");
+    initialize_rendering();
+
+    return true;
+}
+
+
+void Demo::cleanup()
+{
+    println("releasing memory");
+    cleanup_rendering();
 }
 
 
@@ -174,13 +187,13 @@ void Demo::set_window_callbacks()
     if(usingXWindow)
     {
         window.xwindow->set_resize_callback(
-                            [this](unsigned int w, unsigned int h){renderer->handle_resize(w,h);}
+                            [this](unsigned int w, unsigned int h){handle_resize(w, h);}
                         );
     }
     else
     {
         window.window->set_resize_callback(
-                            [this](unsigned int w, unsigned int h){renderer->handle_resize(w,h);}
+                            [this](unsigned int w, unsigned int h){handle_resize(w, h);}
                         );
         window.window->set_keydown_callback(
                             [this](SDL_Keycode k){handle_keydown(k);}
@@ -325,6 +338,12 @@ void Demo::handle_keydown(SDL_Keycode k)
 void Demo::handle_keyup(SDL_Keycode k)
 {
 
+}
+
+
+void Demo::handle_resize(unsigned int w, unsigned int h)
+{
+    renderer->handle_resize(w, h);
 }
 
 
