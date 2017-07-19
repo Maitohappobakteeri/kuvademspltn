@@ -45,36 +45,52 @@ public:
     FireDemo(const Demo::Args& args, const std::wstring& command)
         :Demo(args, command)
     {
-         fireShader = new Shader("res/fire/shader/fireMult.fragmentshader", GL_FRAGMENT_SHADER,
-                                        "res/fire/shader/fire.vertexshader", GL_VERTEX_SHADER);
 
-        const GLfloat rectpoints[] =
-        {
-            -1.0,-1.0,0.0,
-            1.0,-1.0,0.0,
-            -1.0,1.0,0.0,
-            1.0f,1.0f,0.0
-        };
-
-        rectTriangleStrip = new Buffer();
-        rectTriangleStrip->buffer_data(GL_ARRAY_BUFFER, rectpoints,
-                                       sizeof(rectpoints), GL_STATIC_DRAW);
-
-        rainbow1.advance(2.0f);
-
-        renderDemoInfo = false;
     }
 
 
     virtual ~FireDemo()
     {
-        delete fireShader;
-        delete rectTriangleStrip;
+
     }
 
 
 protected:
 
+    virtual bool init() override
+    {
+        if(!Demo::init()) return false;
+
+        fireShader = new Shader("res/fire/shader/fireMult.fragmentshader", GL_FRAGMENT_SHADER,
+                                       "res/fire/shader/fire.vertexshader", GL_VERTEX_SHADER);
+
+        const GLfloat rectpoints[] =
+        {
+           -1.0,-1.0,0.0,
+           1.0,-1.0,0.0,
+           -1.0,1.0,0.0,
+           1.0f,1.0f,0.0
+        };
+
+        rectTriangleStrip = new Buffer();
+        rectTriangleStrip->buffer_data(GL_ARRAY_BUFFER, rectpoints,
+                                      sizeof(rectpoints), GL_STATIC_DRAW);
+
+        rainbow1.advance(2.0f);
+
+        renderDemoInfo = false;
+
+        return true;
+    }
+
+
+    virtual void cleanup() override
+    {
+        delete fireShader;
+        delete rectTriangleStrip;
+
+        Demo::cleanup();
+    }
 
     virtual bool update(float step) override
     {
