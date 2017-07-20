@@ -102,6 +102,10 @@ bool Window::handle_events()
 void Window::set_resize_callback(std::function<void(unsigned int, unsigned int)> callbk)
 {
     resizeCallback = callbk;
+
+    int w, h;
+    SDL_GetWindowSize(window, &w, &h);
+    if(resizeCallback) resizeCallback(w, h);
 }
 
 
