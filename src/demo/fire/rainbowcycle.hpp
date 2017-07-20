@@ -15,9 +15,17 @@ public:
     Color get_color() const;
     void advance(float step);
 
+    void set_brightness_range(float min, float max, float speed);
+    void set_saturation_range(float min, float max, float speed);
+
 private:
 
-    float phase;
+    float huePhase;
+    float brightPhase;
+    float satPhase;
+
+    float minBright, maxBright, speedBright;
+    float minSat, maxSat, speedSat;
 };
 
 

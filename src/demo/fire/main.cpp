@@ -76,7 +76,12 @@ protected:
         rectTriangleStrip->buffer_data(GL_ARRAY_BUFFER, rectpoints,
                                       sizeof(rectpoints), GL_STATIC_DRAW);
 
-        rainbow1.advance(2.0f);
+        rainbow1.advance(0.3f);
+        rainbow1.set_saturation_range(0.1, 1, 0.5);
+        rainbow1.set_brightness_range(0.1, 1, 0.25);
+
+        rainbow2.set_saturation_range(0.8, 1, 1.0);
+        rainbow2.set_brightness_range(0.4, 1, 0.8);
 
         renderDemoInfo = false;
 
@@ -94,8 +99,9 @@ protected:
 
     virtual bool update(float step) override
     {
-        rainbow1.advance(step);
-        rainbow2.advance(step);
+        const float colorSpeed = 1.0f / 4.0f;
+        rainbow1.advance(step*colorSpeed);
+        rainbow2.advance(step*colorSpeed);
         return false;
     }
 
