@@ -17,18 +17,34 @@ namespace
 }
 
 
-SpriteDemo::SpriteDemo(const std::string& spritePath, const Demo::Args& args,
+SpriteDemo::SpriteDemo(const std::string& spriteFilename, const Demo::Args& args,
                        const std::wstring& command)
-    :Demo(args, command)
+    :Demo(args, command), spriteFilename(spriteFilename)
 {
-    spriteModel = read_spritedata_from_file(renderer, spritePath);
-    renderer->create_spritegroup()->create_sprite(create_sprite(spriteModel));
+
 }
 
 
 SpriteDemo::~SpriteDemo()
 {
 
+}
+
+
+bool SpriteDemo::init()
+{
+    if(!Demo::init()) return false;
+
+    spriteModel = read_spritedata_from_file(renderer, spriteFilename);
+    renderer->create_spritegroup()->create_sprite(create_sprite(spriteModel));
+
+    return true;
+}
+
+
+void SpriteDemo::cleanup()
+{
+    Demo::cleanup();
 }
 
 
