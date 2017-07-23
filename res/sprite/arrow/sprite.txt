@@ -1,0 +1,11 @@
+textures = [
+    res/sprite/arrow/arrow1.png,
+    res/sprite/arrow/arrow2.png,
+    res/sprite/arrow/arrow3.png,
+    res/sprite/arrow/arrow4.png,
+    res/sprite/arrow/arrow5.png,
+    res/sprite/arrow/arrow6.png,
+    res/sprite/arrow/arrow7.png
+];
+frameDuration = 100;
+syncTime = 0;

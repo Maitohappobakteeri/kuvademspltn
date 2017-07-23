@@ -6,6 +6,9 @@
 #include <boost/program_options.hpp>
 
 
+const char* DEFAULT_SPRITE_FILENAME = "res/sprite/arrow/sprite.txt";
+
+
 int main(int argc, char *argv[])
 {
     namespace opt = boost::program_options;
@@ -41,12 +44,16 @@ int main(int argc, char *argv[])
 
     if(args.shouldRun)
     {
+        std::string spritePath;
         if(vm.count("spritefile") == 0)
         {
-            println("Give a sprite file!");
-            exit(-1);
+            println("using sprite file: ", DEFAULT_SPRITE_FILENAME);
+            spritePath = DEFAULT_SPRITE_FILENAME;
         }
-        const std::string spritePath = vm["spritefile"].as<std::string>();
+        else
+        {
+            spritePath = vm["spritefile"].as<std::string>();
+        }
 
         println(PROJECT_NAME, " - sprite");
         SpriteDemo demo(spritePath, args, join_command(argc, argv));
