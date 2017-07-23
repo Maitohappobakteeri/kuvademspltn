@@ -21,6 +21,21 @@ protected:
 
     virtual bool update(float step) override;
     virtual void render() override;
+
+    virtual void handle_resize(unsigned int w, unsigned int h) override;
+
+private:
+
+    void render_cube();
+
+    Shader* colorShader;
+    Buffer* cubeBuffer;
+    Buffer* normalBuffer;
+
+    glm::mat4 projectionMatrix;
+    glm::mat4 viewMatrix;
+
+    float zRotation;
 };
 
 #endif
