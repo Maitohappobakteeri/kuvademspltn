@@ -3,11 +3,12 @@
 in vec3 modelVertex;
 in vec3 inNormal;
 uniform mat4 mvpMatrix = mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+uniform mat4 normalRotationMatrix = mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
 
 out vec3 normal;
 
 void main()
 {
     gl_Position.xyzw = mvpMatrix * vec4(modelVertex,1.0);
-    normal = inNormal;
+    normal = (normalRotationMatrix * vec4(inNormal, 0.0)).xyz;
 }

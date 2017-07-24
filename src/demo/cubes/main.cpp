@@ -1,6 +1,7 @@
 
 #include "project.hpp"
 #include "print.hpp"
+#include "rng.hpp"
 #include "cubesdemo.hpp"
 
 #include <boost/program_options.hpp>
@@ -35,6 +36,7 @@ int main(int argc, char *argv[])
     if(args.shouldRun)
     {
         println(PROJECT_NAME, " - cubes");
+        seed_randgen();
         CubesDemo demo(args, join_command(argc, argv));
         exit(demo.run());
     }

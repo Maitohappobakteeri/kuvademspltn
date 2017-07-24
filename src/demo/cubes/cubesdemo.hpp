@@ -4,6 +4,8 @@
 
 #include "demo.hpp"
 
+#include <btBulletDynamicsCommon.h>
+
 #include <string>
 
 
@@ -23,10 +25,17 @@ protected:
     virtual void render() override;
 
     virtual void handle_resize(unsigned int w, unsigned int h) override;
+    virtual void handle_keydown(SDL_Keycode k) override;
 
 private:
 
-    void render_cube();
+    void init_bullet();
+    void init_ground();
+    void init_cube();
+    void cleanup_bullet();
+
+    void reset_cube();
+    void render_cube() const;
 
     Shader* colorShader;
     Buffer* cubeBuffer;
@@ -35,8 +44,16 @@ private:
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
 
-    float zRotation;
-    float viewRotation;
+    float resetCounter;
+
+    btDiscreteDynamicsWorld* dynamicsWorld;
+    btAlignedObjectArray<btCollisionShape*>	collisionShapes;
+	btBroadphaseInterface*	broadphase;
+	btCollisionDispatcher*	dispatcher;
+	btConstraintSolver*	solver;
+	btDefaultCollisionConfiguration* collisionConfiguration;
+
+    btRigidBody* cubeBody;
 };
 
 #endif

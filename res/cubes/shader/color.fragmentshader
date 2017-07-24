@@ -8,6 +8,7 @@ out vec4 color;
 
 void main()
 {
-    color.rgb = inColor.rgb * (0.6666666 + 0.333333 * dot(normal, vec3(0,1,0)));
+    vec3 lightSource = normalize(vec3(1,1,1));
+    color.rgb = inColor.rgb * (0.6666666 + 0.333333 * dot(normal, lightSource));
     color.a = inColor.a;
 }
