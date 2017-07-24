@@ -152,10 +152,10 @@ bool Window::handle_events()
                     int button;
                     switch(e.button.button)
                     {
-                        case SDL_BUTTON_RIGHT:
+                        case SDL_BUTTON_LEFT:
                             button = 1;
                             break;
-                        case SDL_BUTTON_LEFT:
+                        case SDL_BUTTON_RIGHT:
                             button = 2;
                             break;
                         case SDL_BUTTON_MIDDLE:
