@@ -68,7 +68,9 @@ protected:
 
     virtual void handle_keydown(SDL_Keycode k);
     virtual void handle_keyup(SDL_Keycode k);
-
+    virtual void handle_mouse_move(float positionX, float positionY, float moveX, float moveY);
+    virtual void handle_mouse_down(float positionX, float positionY, int button);
+    virtual void handle_mouse_up(float positionX, float positionY, int button);
     virtual void handle_resize(unsigned int w, unsigned int h);
 
     union
@@ -80,17 +82,9 @@ protected:
     Renderer* renderer;
     std::shared_ptr<Font> font;
 
-    // frequencies (runs/second)
-    FrequencyCounter renderFreqCounter;
-    unsigned int renderFreq;
-    FrequencyCounter updateFreqCounter;
-    unsigned int updateFreq;
-
     // runtime settings
-    Args args;
     unsigned int updateRate; //updates in second
     bool renderDemoInfo;
-    bool usingXWindow;
 
     DynamicBox infoTextBox;
     std::wstring command;
@@ -108,6 +102,15 @@ private:
     void cleanup_rendering();
 
     void render_info();
+
+    // frequencies (runs/second)
+    FrequencyCounter renderFreqCounter;
+    unsigned int renderFreq;
+    FrequencyCounter updateFreqCounter;
+    unsigned int updateFreq;
+
+    Args args;
+    bool usingXWindow;
 };
 
 
