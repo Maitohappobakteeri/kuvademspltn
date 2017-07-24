@@ -1,5 +1,6 @@
 #include "window.hpp"
 
+
 #include "project.hpp"
 
 #include <GL/glew.h>
@@ -7,23 +8,25 @@
 
 #include <iostream>
 
+
 Window::Window()
-    :window(nullptr)
+    :window(nullptr), width(640), height(640)
 {
-    window = SDL_CreateWindow(PROJECT_NAME, 0, 0, 640, 640, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow(PROJECT_NAME, 0, 0, width, height, SDL_WINDOW_OPENGL);
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                         SDL_GL_CONTEXT_PROFILE_CORE);
+
     glContext = SDL_GL_CreateContext(window);
     if(glContext == nullptr)
     {
-        std::cerr << "failed to creat gl context: "
+        std::cerr << "failed to create gl context: "
                   << SDL_GetError() << std::endl;
         throw std::runtime_error("failed to create gl context");
     }
-    //Initialize GLEW
+
     glewExperimental = GL_TRUE;
     GLenum glewError = glewInit();
     if(glewError != GLEW_OK)
@@ -31,7 +34,8 @@ Window::Window()
         std::cerr << "failed to init glew: "
                   <<  glewGetErrorString(glewError) << std::endl;
         throw std::runtime_error("failed to init glew");
-    } //Use Vsync
+    }
+
     if(SDL_GL_SetSwapInterval( 1 ) < 0)
     {
         std::cerr << "failed to enable vsync: " << SDL_GetError() << std::endl;
@@ -59,38 +63,116 @@ bool Window::handle_events()
     SDL_Event e;
     if(SDL_PollEvent(&e))
     {
-        if(e.type == SDL_QUIT)
+        switch(e.type)
         {
-            shouldStop = true;
-        }
-        else if(e.type == SDL_WINDOWEVENT)
-        {
-            if(e.window.event == SDL_WINDOWEVENT_RESIZED)
+            case SDL_QUIT:
             {
-                if(resizeCallback)
-                {
-                    resizeCallback(e.window.data1, e.window.data2);
-                }
+                shouldStop = true;
+                break;
             }
-        }
-        else if(e.type == SDL_KEYDOWN)
-        {
-            if(e.key.repeat == 0)
+            case SDL_WINDOWEVENT:
             {
-                if(keydownCallback)
+                if(e.window.event == SDL_WINDOWEVENT_RESIZED)
                 {
-                    keydownCallback(e.key.keysym.sym);
+                    if(resizeCallback)
+                    {
+                        width = e.window.data1;
+                        height = e.window.data2;
+                        resizeCallback(width, height);
+                    }
                 }
+                break;
             }
-        }
-        else if(e.type == SDL_KEYUP)
-        {
-            if(e.key.repeat == 0)
+            case SDL_KEYDOWN:
             {
-                if(keyupCallback)
+                if(e.key.repeat == 0)
                 {
-                    keyupCallback(e.key.keysym.sym);
+                    if(keydownCallback)
+                    {
+                        keydownCallback(e.key.keysym.sym);
+                    }
                 }
+                break;
+            }
+            case SDL_KEYUP:
+            {
+                if(e.key.repeat == 0)
+                {
+                    if(keyupCallback)
+                    {
+                        keyupCallback(e.key.keysym.sym);
+                    }
+                }
+                break;
+            }
+            case SDL_MOUSEMOTION:
+            {
+                if(mouseMoveCallback)
+                {
+                    mouseMoveCallback(float(e.motion.x)/float(width),
+                                      float(e.motion.y)/float(height),
+                                      float(e.motion.xrel)/float(width),
+                                      float(e.motion.yrel)/float(height));
+                }
+                break;
+            }
+            case SDL_MOUSEBUTTONDOWN:
+            {
+                if(mouseDownCallback)
+                {
+                    int button;
+                    switch(e.button.button)
+                    {
+                        case SDL_BUTTON_RIGHT:
+                            button = 1;
+                            break;
+                        case SDL_BUTTON_LEFT:
+                            button = 2;
+                            break;
+                        case SDL_BUTTON_MIDDLE:
+                            button = 3;
+                            break;
+                        case SDL_BUTTON_X1:
+                            button = 4;
+                            break;
+                        case SDL_BUTTON_X2:
+                            button = 5;
+                            break;
+                    }
+                    mouseDownCallback(float(e.button.x)/float(width),
+                                      float(e.button.y)/float(height),
+                                      button);
+                }
+                break;
+            }
+            case SDL_MOUSEBUTTONUP:
+            {
+                if(mouseUpCallback)
+                {
+                    int button;
+                    switch(e.button.button)
+                    {
+                        case SDL_BUTTON_RIGHT:
+                            button = 1;
+                            break;
+                        case SDL_BUTTON_LEFT:
+                            button = 2;
+                            break;
+                        case SDL_BUTTON_MIDDLE:
+                            button = 3;
+                            break;
+                        case SDL_BUTTON_X1:
+                            button = 4;
+                            break;
+                        case SDL_BUTTON_X2:
+                            button = 5;
+                            break;
+                    }
+                    mouseUpCallback(float(e.button.x)/float(width),
+                                    float(e.button.y)/float(height),
+                                    button);
+                }
+                break;
             }
         }
     }
@@ -118,4 +200,22 @@ void Window::set_keydown_callback(std::function<void(SDL_Keycode)> callbk)
 void Window::set_keyup_callback(std::function<void(SDL_Keycode)> callbk)
 {
     keyupCallback = callbk;
+}
+
+
+void Window::set_mouse_move_callback(std::function<void(float, float, float, float)> callbk)
+{
+    mouseMoveCallback = callbk;
+}
+
+
+void Window::set_mouse_down_callback(std::function<void(float, float, int)> callbk)
+{
+    mouseDownCallback = callbk;
+}
+
+
+void Window::set_mouse_up_callback(std::function<void(float, float, int)> callbk)
+{
+    mouseUpCallback = callbk;
 }

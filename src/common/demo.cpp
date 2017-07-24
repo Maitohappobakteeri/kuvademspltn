@@ -40,8 +40,9 @@ namespace
 
 
 Demo::Demo(const Demo::Args& args, const std::wstring& command)
-     :window{nullptr}, renderer(nullptr), renderFreq(0), updateFreq(0), args(args),
-      updateRate(60), renderDemoInfo(true), command(command)
+     :window{nullptr}, renderer(nullptr),
+      updateRate(60), renderDemoInfo(true), command(command),
+      renderFreq(0), updateFreq(0), args(args)
 {
 
 }
@@ -79,8 +80,7 @@ int Demo::run()
 
         renderFreqCounter.update(SDL_GetTicks(), renderFreq);
 
-        // runtime information print
-        printstatus("render: ", renderFreq, " ", "update: ", updateFreq);
+        // printstatus("render: ", renderFreq, " ", "update: ", updateFreq);
         short_sleep();
     }
 
@@ -200,6 +200,18 @@ void Demo::set_window_callbacks()
                         );
         window.window->set_keyup_callback(
                             [this](SDL_Keycode k){handle_keyup(k);}
+                        );
+        window.window->set_mouse_move_callback(
+                            [this](float x, float y, float mx, float my)
+                            {handle_mouse_move(x, y, mx, my);}
+                        );
+        window.window->set_mouse_down_callback(
+                            [this](float x, float y, int b)
+                            {handle_mouse_down(x, y, b);}
+                        );
+        window.window->set_mouse_up_callback(
+                            [this](float x, float y, int b)
+                            {handle_mouse_up(x, y, b);}
                         );
     }
 }
@@ -336,6 +348,24 @@ void Demo::handle_keydown(SDL_Keycode k)
 
 
 void Demo::handle_keyup(SDL_Keycode k)
+{
+
+}
+
+
+void Demo::handle_mouse_move(float positionX, float positionY, float moveX, float moveY)
+{
+
+}
+
+
+void Demo::handle_mouse_down(float positionX, float positionY, int button)
+{
+
+}
+
+
+void Demo::handle_mouse_up(float positionX, float positionY, int button)
 {
 
 }
