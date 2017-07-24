@@ -129,6 +129,9 @@ bool CubesDemo::init()
                              glm::vec3{0.0f,1.0f,0.0f});
 
     resetCounter = 0;
+    isDraggingView = false;
+    rotationY = 0;
+    rotationX = 0;
 
 	init_bullet();
 
@@ -158,6 +161,13 @@ bool CubesDemo::update(float step)
     }
 
 	dynamicsWorld->stepSimulation(step);
+
+    glm::mat4 viewRotationMat = glm::rotate(glm::rotate(glm::mat4(), rotationY, {0,1,0}),
+                                            rotationX, {1,0,0});
+    glm::vec4 rotatedEyePosition = viewRotationMat * (glm::vec4{-0.5f, 4.0f, -5.0f, 0.0f} * 1.5f);
+    viewMatrix = glm::lookAt(glm::vec3(rotatedEyePosition),
+                             glm::vec3{0.0f,0.0f,0.0f},
+                             glm::vec3{0.0f,1.0f,0.0f});
 
     return false;
 }
@@ -189,6 +199,34 @@ void CubesDemo::handle_keydown(SDL_Keycode k)
         resetCounter = 0;
         reset_cube();
         break;
+    }
+}
+
+
+void CubesDemo::handle_mouse_move(float positionX, float positionY, float moveX, float moveY)
+{
+    if(isDraggingView)
+    {
+        rotationY -= moveX * 2.5f;
+        rotationX += moveY * 2.5f;
+    }
+}
+
+
+void CubesDemo::handle_mouse_down(float positionX, float positionY, int button)
+{
+    if(button == 1)
+    {
+        isDraggingView = true;
+    }
+}
+
+
+void CubesDemo::handle_mouse_up(float positionX, float positionY, int button)
+{
+    if(button == 1)
+    {
+        isDraggingView = false;
     }
 }
 
