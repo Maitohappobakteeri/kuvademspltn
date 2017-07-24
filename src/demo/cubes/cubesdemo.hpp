@@ -36,6 +36,7 @@ private:
     glm::mat4 viewMatrix;
 
     float zRotation;
+    float viewRotation;
 };
 
 #endif

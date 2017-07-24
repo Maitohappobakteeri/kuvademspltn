@@ -128,6 +128,7 @@ bool CubesDemo::init()
                              glm::vec3{0.0f,1.0f,0.0f});
 
     zRotation = 0;
+    viewRotation = 0;
 
     return true;
 }
@@ -146,6 +147,15 @@ void CubesDemo::cleanup()
 bool CubesDemo::update(float step)
 {
     zRotation += step;
+    viewRotation += step / 3.0f;
+
+    glm::vec4 rotatedPosition = glm::rotate(glm::mat4(), viewRotation,
+                                         {glm::cross(glm::vec3{-0.5f,4.0f,-5.0f},
+                                                     glm::vec3{0,1,0})})
+                                * glm::vec4{-0.5f,4.0f,-5.0f, 1.0};
+    viewMatrix = glm::lookAt(glm::vec3(rotatedPosition),
+                             glm::vec3{0.0f,0.0f,0.0f},
+                             glm::vec3{0.0f,1.0f,0.0f});
 
     return false;
 }
