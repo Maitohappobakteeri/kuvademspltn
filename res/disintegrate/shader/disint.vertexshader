@@ -1,0 +1,16 @@
+#version 130
+
+in vec3 modelVertex;
+in vec2 textureUvVec;
+
+uniform mat4 mvpMatrix = mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+
+out vec3 position;
+out vec2 uvVec;
+
+void main()
+{
+    gl_Position.xyzw = mvpMatrix * vec4(modelVertex,1.0);
+    position = modelVertex;
+    uvVec = textureUvVec;
+}

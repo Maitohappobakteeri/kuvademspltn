@@ -1,0 +1,30 @@
+#version 130
+
+in vec3 position;
+in vec2 uvVec;
+
+uniform sampler2D tex;
+uniform vec4 disintColor;
+uniform float time;
+
+out vec4 color;
+
+void main()
+{
+    float distance = (position.x * position.x
+                       + position.y * position.y
+                       + position.z * position.z);
+
+    float i = max(1.0f - time * distance - 0.2 * time, 0);
+
+    if(i >= 0.1)
+    {
+        float a = i;
+        color.a = pow(a, 1/4);
+        color.rgb = a * texture2D(tex, uvVec).rgb + disintColor.rgb * (1 - a);
+    }
+    else
+    {
+        color = vec4(0,0,0,0);
+    }
+}
