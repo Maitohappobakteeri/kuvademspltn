@@ -113,6 +113,8 @@ bool Demo::init()
 
     println("initializing rendering");
     initialize_rendering();
+    
+    set_window_callbacks();
 
     return true;
 }
@@ -227,8 +229,6 @@ bool Demo::initialize_rendering()
     {
         return false;
     }
-
-    set_window_callbacks();
 
     font = renderer->load_font(RES_COMMON_FONT_INCONSOLATA_REGULAR, 32);
 
