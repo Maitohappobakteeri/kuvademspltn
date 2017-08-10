@@ -5,5 +5,6 @@ textures = [
     res/roiske/veri/04.png,
     res/roiske/veri/05.png
 ];
-frameDuration = 100;
+frameDuration = 50;
 syncTime = CURRENT;
+loop = false;
