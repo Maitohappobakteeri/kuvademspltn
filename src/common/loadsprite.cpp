@@ -148,11 +148,16 @@ SpriteModel parse_spritedata(Renderer* renderer, const std::string& spriteString
     prs::Object* loopObj = map.get("loop");
     if(loopObj != nullptr)
     {
-        if(loopObj->to_string() == "true")
+        std::string loopStr = loopObj->to_string();
+        if(loopStr == "true")
         {
             spriteData.loop = true;
         }
-        else if(loopObj->to_string() != "false")
+        else if(loopStr == "false")
+        {
+            spriteData.loop = false;
+        }
+        else
         {
             throw std::runtime_error(std::string("failed to read ") + "loop bool");
         }
