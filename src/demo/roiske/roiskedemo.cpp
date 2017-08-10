@@ -17,7 +17,7 @@ namespace
 RoiskeDemo::RoiskeDemo(const Demo::Args& args, const std::wstring& command)
     :Demo(args, command), resetCounter(0), rotationVelocity(0), velocity()
 {
-    // renderDemoInfo = false;
+    renderDemoInfo = false;
 }
 
 
@@ -37,7 +37,6 @@ bool RoiskeDemo::init()
 
     splatterSpriteGroup = renderer->create_spritegroup();
     splatterSpriteGroup->set_scale({30.0f, 30.0f});
-    splatterScale = glm::vec2(3.0f, 3.0f);
 
     splatterModel = read_spritedata_from_file(renderer, "res/roiske/blood.sprite");
     splatterSprite = splatterSpriteGroup->create_sprite(create_sprite(splatterModel));
@@ -60,6 +59,8 @@ bool RoiskeDemo::update(float step)
     resetCounter += step;
     if(resetCounter > RESET_TIME)
     {
+        glm::vec2 splatterScale = renderer->get_view_scale();
+
         resetCounter -= RESET_TIME;
 
         splatterSpriteGroup->remove_sprite(splatterSprite);
@@ -67,7 +68,8 @@ bool RoiskeDemo::update(float step)
 
         std::uniform_real_distribution<float> realDist(-1.0f, 1.0f);
         std::uniform_real_distribution<float> realDist2(0.0f, 2.0f);
-        splatterSprite->set_position(10.0f * glm::vec2{realDist(randGen), realDist(randGen)});
+        splatterSprite->set_position(10.0f * glm::vec2{splatterScale.x * realDist(randGen),
+                                                       splatterScale.y * realDist(randGen)});
 
         float r = realDist(randGen) * 6.3f;
         splatterSprite->set_rotation(r);
@@ -88,7 +90,7 @@ void RoiskeDemo::render()
     renderer->render_sprites();
     renderer->set_render_target_screen();
     renderer->clear_screen();
-    renderer->render_texture(splatterTexture.get(), {0,0}, splatterScale, 0);
+    renderer->render_texture(splatterTexture.get(), {0,0}, {3, 3}, 0);
 }
 
 

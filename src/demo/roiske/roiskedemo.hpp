@@ -35,8 +35,6 @@ private:
     SpriteGroup* splatterSpriteGroup;
     Sprite* splatterSprite;
 
-    glm::vec2 splatterScale;
-
     float resetCounter;
     float rotationVelocity;
     glm::vec2 velocity;
