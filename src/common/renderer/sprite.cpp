@@ -3,10 +3,9 @@
 unsigned int Sprite::timeNow = 0;
 
 
-Sprite::Sprite(Texture const* texture, const glm::vec2& position,
-                           const glm::vec2& scale)
+Sprite::Sprite(Texture const* texture, const glm::vec2& position, const glm::vec2& scale)
     :position(position), scale(scale), rotation(0), textures(), frameDuration(999),
-     syncTime(0)
+     syncTime(0), loop(true)
 {
     textures.push_back(texture);
 }
@@ -14,19 +13,19 @@ Sprite::Sprite(Texture const* texture, const glm::vec2& position,
 
 Sprite::Sprite(const std::vector<Texture const*>& textures,
                unsigned int frameDuration, unsigned int syncTime,
-               const glm::vec2& position, const glm::vec2& scale)
+               const glm::vec2& position, const glm::vec2& scale, bool loop)
    :position(position), scale(scale), rotation(0), textures(textures),
-    frameDuration(frameDuration), syncTime(syncTime)
+    frameDuration(frameDuration), syncTime(syncTime), loop(loop)
 {
 
 }
 
 
 Sprite::Sprite(std::initializer_list<Texture const*> textures,
-                               unsigned int frameDuration, unsigned int syncTime,
-                               const glm::vec2& position, const glm::vec2& scale)
+               unsigned int frameDuration, unsigned int syncTime,
+               const glm::vec2& position, const glm::vec2& scale, bool loop)
    :position(position), scale(scale), rotation(0), textures(textures),
-    frameDuration(frameDuration), syncTime(syncTime)
+    frameDuration(frameDuration), syncTime(syncTime), loop(loop)
 {
 
 }
@@ -46,7 +45,22 @@ Texture const* Sprite::get_texture() const
     }
     else
     {
-        return textures[((timeNow - syncTime) / frameDuration) % textures.size()];
+        unsigned int frameIndex = ((timeNow - syncTime) / frameDuration);
+        if(loop)
+        {
+            return textures[frameIndex % textures.size()];
+        }
+        else
+        {
+            if(frameIndex >= textures.size())
+            {
+                return textures.back();
+            }
+            else
+            {
+                return textures[frameIndex];
+            }
+        }
     }
 }
 

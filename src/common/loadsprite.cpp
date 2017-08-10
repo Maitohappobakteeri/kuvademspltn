@@ -119,7 +119,7 @@ SpriteModel parse_spritedata(Renderer* renderer, const std::string& spriteString
         }
     }
 
-    // get frameDuration unsigned long
+    // get syncTime unsigned long
     prs::Object* syncTime = map.get("syncTime");
     if(syncTime != nullptr)
     {
@@ -142,6 +142,22 @@ SpriteModel parse_spritedata(Renderer* renderer, const std::string& spriteString
             }
         }
     }
+
+
+    // get loop bool
+    prs::Object* loopObj = map.get("loop");
+    if(loopObj != nullptr)
+    {
+        if(loopObj->to_string() == "true")
+        {
+            spriteData.loop = true;
+        }
+        else if(loopObj->to_string() != "false")
+        {
+            throw std::runtime_error(std::string("failed to read ") + "loop bool");
+        }
+    }
+
 
     return spriteData;
 }
@@ -172,10 +188,12 @@ Sprite create_sprite(const SpriteModel& spriteData)
 
     if(spriteData.useCurrentTime)
     {
-        return Sprite(spriteTextures, spriteData.frameDuration, SDL_GetTicks(), {0,0}, {1,1});
+        return Sprite(spriteTextures, spriteData.frameDuration, SDL_GetTicks(), {0,0}, {1,1},
+                      spriteData.loop);
     }
     else
     {
-        return Sprite(spriteTextures, spriteData.frameDuration, spriteData.syncTime, {0,0}, {1,1});
+        return Sprite(spriteTextures, spriteData.frameDuration, spriteData.syncTime, {0,0}, {1,1},
+                      spriteData.loop);
     }
 }

@@ -13,9 +13,10 @@
 struct SpriteModel
 {
     std::vector<std::shared_ptr<Texture>> textures;
-    unsigned int frameDuration;
-    unsigned int syncTime;
-    bool useCurrentTime;
+    unsigned int frameDuration = 100;
+    unsigned int syncTime = 0;
+    bool useCurrentTime = false;
+    bool loop = true;
 };
 
 

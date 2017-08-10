@@ -15,9 +15,11 @@ public:
 
     Sprite(Texture const* texture, const glm::vec2& position, const glm::vec2& scale);
     Sprite(const std::vector<Texture const*>& textures, unsigned int frameDuration,
-                   unsigned int syncTime, const glm::vec2& position, const glm::vec2& scale);
+           unsigned int syncTime, const glm::vec2& position, const glm::vec2& scale,
+           bool loop);
     Sprite(std::initializer_list<Texture const*> textures, unsigned int frameDuration,
-                   unsigned int syncTime, const glm::vec2& position, const glm::vec2& scale);
+           unsigned int syncTime, const glm::vec2& position, const glm::vec2& scale,
+           bool loop);
     ~Sprite();
 
     Texture const* get_texture() const;
@@ -46,6 +48,8 @@ private:
     unsigned int frameDuration;
     // animation start time
     unsigned int syncTime;
+    // should frames loop
+    bool loop;
 };
 
 #endif
