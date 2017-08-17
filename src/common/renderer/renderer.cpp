@@ -520,7 +520,6 @@ void Renderer::render_line(const Color& color, const glm::vec2& start, const glm
     if(diff.x != 0)
     {
         rotation = std::atan(diff.y / diff.x);
-        printstatus(rotation);
     }
 
     glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x, position.y, 0})
