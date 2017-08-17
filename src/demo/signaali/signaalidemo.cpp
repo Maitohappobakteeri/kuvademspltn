@@ -12,7 +12,7 @@ namespace
 
 
 SignaaliDemo::SignaaliDemo(const Demo::Args& args, const std::wstring& command)
-    :Demo(args, command), shouldStop(false)
+    :Demo(args, command), signalTextureScale(1,1), shouldStop(false)
 {
     // renderDemoInfo = false;
 }
@@ -33,7 +33,7 @@ bool SignaaliDemo::init()
     signalFramebuffer.reset(new Framebuffer(*signalTexture));
 
     signalTexture2.reset(new Texture(Texture::create_empty(SIGNALTEXTURE_SIZE,
-                                                          SIGNALTEXTURE_SIZE)));
+                                                           SIGNALTEXTURE_SIZE)));
     signalFramebuffer2.reset(new Framebuffer(*signalTexture2));
 
     pointTexture = renderer->load_texture("res/signaali/point.png");
@@ -84,8 +84,8 @@ bool SignaaliDemo::update(float step)
 
 void SignaaliDemo::render()
 {
-    const float advance = -0.0008f;
-    const float pointSize = 0.0125f;
+    float advance = -0.0008f / signalTextureScale.x;
+    float pointSize = 0.0125f;
 
     renderer->set_render_target(*signalFramebuffer);
     renderer->render_rectangle({0.6,0.6,0.6}, {0,0}, {1,1}, 0);
@@ -95,7 +95,8 @@ void SignaaliDemo::render()
     {
         renderer->render_texture(pointTexture.get(), {0.9f + ((pointHeights.size() - 1)*advance),
                                                       pointHeights.front()},
-                                                      {pointSize, pointSize}, 0);
+                                                      {pointSize / signalTextureScale.x,
+                                                       pointSize}, 0);
         pointHeights.pop();
     }
     pointLock.unlock();
@@ -105,13 +106,16 @@ void SignaaliDemo::render()
 
     renderer->set_render_target_screen();
     renderer->clear_screen();
-    renderer->render_texture(signalTexture.get(), {0,0}, {1,1}, 0);
+    renderer->render_texture(signalTexture.get(), {0,0}, signalTextureScale, 0);
 }
 
 
 void SignaaliDemo::handle_resize(unsigned int w, unsigned int h)
 {
     Demo::handle_resize(w, h);
+
+    glm::vec2 viewScale = renderer->get_view_scale();
+    signalTextureScale = viewScale;
 }
 
 

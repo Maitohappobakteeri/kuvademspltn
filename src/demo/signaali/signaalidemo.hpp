@@ -42,6 +42,8 @@ private:
     std::unique_ptr<Texture> signalTexture2;
     std::unique_ptr<Framebuffer> signalFramebuffer2;
 
+    glm::vec2 signalTextureScale;
+
     pa_simple* inputStream;
     pa_sample_spec sampleSpec;
 
