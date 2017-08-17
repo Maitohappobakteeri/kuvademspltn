@@ -76,6 +76,7 @@ public:
     void render_rectangle_outline(const Color& color, const glm::vec2& position,
                                   const glm::vec2& size, float rotation);
     void render_circle(const Color& color, const glm::vec2& position, const glm::vec2& size);
+    void render_line(const Color& color, const glm::vec2& start, const glm::vec2& end);
 
     void set_render_target_screen();
     void set_render_target(const Framebuffer& fb);
@@ -104,6 +105,8 @@ private:
     std::unique_ptr<Buffer> rectLineStrip;
     // vertex buffer for a circle
     std::unique_ptr<Buffer> circleLineStrip;
+    // a line
+    std::unique_ptr<Buffer> line;
     // texture mapping that uses the full texture
     std::unique_ptr<Buffer> fullUvBuffer;
 
