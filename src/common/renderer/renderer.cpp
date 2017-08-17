@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 
 Renderer::Renderer()
@@ -54,6 +55,7 @@ Renderer::~Renderer()
     rectTriangleStrip.reset();
     rectLineStrip.reset();
     circleLineStrip.reset();
+    line.reset();
     fullUvBuffer.reset();
     glDeleteVertexArrays(1, &vao);
 }
@@ -492,6 +494,44 @@ void Renderer::render_circle(const Color& color, const glm::vec2& position, cons
 }
 
 
+void Renderer::render_line(const Color& color, const glm::vec2& start, const glm::vec2& end)
+{
+    glEnableVertexAttribArray(0);
+
+    line->bind(GL_ARRAY_BUFFER);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,(void*)0);
+
+    colorShader->use();
+
+    static int mvpId = colorShader->get_uniform_location("mvpMatrix");
+    static int colId = colorShader->get_uniform_location("inColor");
+
+    static glm::mat4 plainMatrix;
+
+    glUniform4f(colId, color.r, color.g, color.b, color.a);
+
+    glm::vec2 position = (end + start) / 2.0f;
+
+    glm::vec2 diff = end - start;
+    float scale = glm::length(diff) / 2.0f;
+
+    const float PI = 3.14159265359f;
+    float rotation = PI / 2.0f;
+    if(diff.x != 0)
+    {
+        rotation = std::atan(diff.y / diff.x);
+        printstatus(rotation);
+    }
+
+    glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x, position.y, 0})
+                         * glm::rotate(glm::mat4(), rotation, {0.0f, 0.0f, 1.0f})
+                         * glm::scale(glm::mat4(), {scale, scale, 1});
+    glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
+
+    glDrawArrays(GL_LINE_STRIP, 0, 2);
+}
+
+
 void Renderer::init_gl()
 {
     GLint major, minor;
@@ -548,6 +588,16 @@ void Renderer::init_gl()
     circleLineStrip.reset(new Buffer());
     circleLineStrip->buffer_data(GL_ARRAY_BUFFER, &circlePoints[0],
                                  circlePoints.size()*sizeof(GLfloat), GL_STATIC_DRAW);
+
+    const GLfloat linepoints[] =
+    {
+        -1.0,0.0,0.0,
+        1.0,0.0,0.0
+    };
+
+    line.reset(new Buffer());
+    line->buffer_data(GL_ARRAY_BUFFER, &linepoints[0],
+                      sizeof(linepoints)*sizeof(GLfloat), GL_STATIC_DRAW);
 
     fullUvBuffer.reset(new Buffer());
     fullUvBuffer->buffer_data(GL_ARRAY_BUFFER, uvpoints,
