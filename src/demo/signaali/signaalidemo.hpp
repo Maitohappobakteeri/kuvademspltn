@@ -52,6 +52,10 @@ private:
 
     std::atomic<bool> shouldStop;
     std::thread inputThread;
+
+    DynamicBox paramTextBox;
+    float advanceSpeed;
+    float pointSize;
 };
 
 #endif

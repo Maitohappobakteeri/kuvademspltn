@@ -8,11 +8,18 @@
 namespace
 {
     const unsigned int SIGNALTEXTURE_SIZE = 2048;
+
+    const float DEFAULT_ADVANCE_SPEED = -0.0008f;
+    const float ADVANCE_SPEED_INCREMENT = 0.00005f;
+
+    const float DEFAULT_POINT_SIZE = 0.0125f;
+    const float POINT_SIZE_INCREMENT = 0.0025f;
 }
 
 
 SignaaliDemo::SignaaliDemo(const Demo::Args& args, const std::wstring& command)
-    :Demo(args, command), signalTextureScale(1,1), shouldStop(false)
+    :Demo(args, command), signalTextureScale(1,1), shouldStop(false),
+     advanceSpeed(DEFAULT_ADVANCE_SPEED), pointSize(DEFAULT_POINT_SIZE)
 {
     // renderDemoInfo = false;
 }
@@ -53,6 +60,9 @@ bool SignaaliDemo::init()
 
     // SDL_GL_SetSwapInterval(0);
 
+    paramTextBox.set_scale({-0.05f, 0.95f}, DynamicBox::REL_HEIGHT, DynamicBox::OFF_WIDTH);
+    paramTextBox.set_align(DynamicBox::RIGHT);
+
     return true;
 }
 
@@ -84,8 +94,8 @@ bool SignaaliDemo::update(float step)
 
 void SignaaliDemo::render()
 {
-    float advance = -0.0008f / signalTextureScale.x;
-    float pointSize = 0.0125f;
+    float advance = this->advanceSpeed / signalTextureScale.x;
+    float pointSize = this->pointSize;
 
     renderer->set_render_target(*signalFramebuffer);
     renderer->render_rectangle({0.6,0.6,0.6}, {0,0}, {1,1}, 0);
@@ -107,6 +117,26 @@ void SignaaliDemo::render()
     renderer->set_render_target_screen();
     renderer->clear_screen();
     renderer->render_texture(signalTexture.get(), {0,0}, signalTextureScale, 0);
+
+    const float lineHeight = 0.04f;
+
+    paramTextBox.update(*renderer);
+
+    renderer->render_string_box(font.get(),
+                                std::wstring(L"Advance speed: ") + std::to_wstring(advanceSpeed),
+                                {1,1,0.8f},
+                                paramTextBox.box_position({0, 1.0f - lineHeight
+                                                              - lineHeight*2*0}),
+                                paramTextBox.box_scale({1.0f, lineHeight}), 0,
+                                Renderer::StringAlign::LEFT);
+
+    renderer->render_string_line(font.get(),
+                                 std::wstring(L"Point size: ") + std::to_wstring(pointSize),
+                                 {1,1,0.8f},
+                                 paramTextBox.box_position({0, 1.0f - lineHeight
+                                                               - lineHeight*2*1}),
+                                 paramTextBox.box_scale({1.0f, lineHeight}), 0,
+                                 Renderer::StringAlign::LEFT);
 }
 
 
