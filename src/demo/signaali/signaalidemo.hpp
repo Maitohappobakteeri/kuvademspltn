@@ -57,6 +57,9 @@ private:
     DynamicBox paramTextBox;
     float advanceSpeed;
     float pointSize;
+    bool useLines;
+
+    glm::vec2 lastPointPosition;
 };
 
 #endif

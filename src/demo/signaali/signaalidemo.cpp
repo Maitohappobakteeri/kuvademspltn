@@ -19,7 +19,7 @@ namespace
 
 SignaaliDemo::SignaaliDemo(const Demo::Args& args, const std::wstring& command)
     :Demo(args, command), signalTextureScale(1,1), shouldStop(false),
-     advanceSpeed(DEFAULT_ADVANCE_SPEED), pointSize(DEFAULT_POINT_SIZE)
+     advanceSpeed(DEFAULT_ADVANCE_SPEED), pointSize(DEFAULT_POINT_SIZE), useLines(false)
 {
     // renderDemoInfo = false;
 }
@@ -101,12 +101,24 @@ void SignaaliDemo::render()
     renderer->render_rectangle({0.6,0.6,0.6}, {0,0}, {1,1}, 0);
     pointLock.lock();
     renderer->render_texture(signalTexture2.get(), {advance * pointHeights.size(),0}, {1,1}, 0);
+    lastPointPosition.x += advance * pointHeights.size();
     while(pointHeights.size() != 0)
     {
-        renderer->render_texture(pointTexture.get(), {0.9f + ((pointHeights.size() - 1)*advance),
-                                                      pointHeights.front()},
-                                                      {pointSize / signalTextureScale.x,
-                                                       pointSize}, 0);
+        glm::vec2 newPointPosition = {0.9f + ((pointHeights.size() - 1)*advance),
+                                      pointHeights.front()};
+        if(useLines)
+        {
+            renderer->render_line({1,0,0}, lastPointPosition, newPointPosition);
+        }
+        else
+        {
+            renderer->render_texture(pointTexture.get(), {0.9f + ((pointHeights.size() - 1)*advance),
+                                                          pointHeights.front()},
+                                                          {pointSize / signalTextureScale.x,
+                                                           pointSize}, 0);
+        }
+        lastPointPosition = newPointPosition;
+
         pointHeights.pop();
     }
     pointLock.unlock();
@@ -139,6 +151,14 @@ void SignaaliDemo::render()
                                                                    - lineHeight*2*1}),
                                      paramTextBox.box_scale({1.0f, lineHeight}), 0,
                                      Renderer::StringAlign::LEFT);
+
+        renderer->render_string_line(font.get(),
+                                     std::wstring(L"Use lines: ") + std::to_wstring(useLines),
+                                     {1,1,0.8f},
+                                     paramTextBox.box_position({0, 1.0f - lineHeight
+                                                                - lineHeight*2*2}),
+                                     paramTextBox.box_scale({1.0f, lineHeight}), 0,
+                                     Renderer::StringAlign::LEFT);
     }
 }
 
@@ -160,6 +180,9 @@ void SignaaliDemo::handle_keydown(SDL_Keycode k)
         break;
     case SDLK_k:
         pointSize += POINT_SIZE_INCREMENT;
+        break;
+    case SDLK_l:
+        useLines = !useLines;
         break;
     }
 }
