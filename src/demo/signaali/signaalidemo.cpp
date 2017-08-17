@@ -12,7 +12,7 @@ namespace
     const float DEFAULT_ADVANCE_SPEED = -0.0008f;
     const float ADVANCE_SPEED_INCREMENT = 0.0001f;
 
-    const float DEFAULT_POINT_SIZE = 0.0125f;
+    const float DEFAULT_POINT_SIZE = 0.0175f;
     const float POINT_SIZE_INCREMENT = 0.0025f;
 }
 
@@ -94,8 +94,8 @@ bool SignaaliDemo::update(float step)
 
 void SignaaliDemo::render()
 {
-    float advance = this->advanceSpeed / signalTextureScale.x;
-    float pointSize = this->pointSize;
+    float advance = this->advanceSpeed / signalTextureScale.y;
+    float pointSize = this->pointSize / signalTextureScale.y;
 
     renderer->set_render_target(*signalFramebuffer);
     renderer->render_rectangle({0.6,0.6,0.6}, {0,0}, {1,1}, 0);
@@ -104,18 +104,17 @@ void SignaaliDemo::render()
     lastPointPosition.x += advance * pointHeights.size();
     while(pointHeights.size() != 0)
     {
-        glm::vec2 newPointPosition = {0.9f + ((pointHeights.size() - 1)*advance),
-                                      pointHeights.front()};
+        glm::vec2 newPointPosition = glm::vec2(0.9f / signalTextureScale.x
+                                               + ((pointHeights.size() - 1)*advance),
+                                               pointHeights.front() / signalTextureScale.y);
         if(useLines)
         {
             renderer->render_line({1,0,0}, lastPointPosition, newPointPosition);
         }
         else
         {
-            renderer->render_texture(pointTexture.get(), {0.9f + ((pointHeights.size() - 1)*advance),
-                                                          pointHeights.front()},
-                                                          {pointSize / signalTextureScale.x,
-                                                           pointSize}, 0);
+            renderer->render_texture(pointTexture.get(), newPointPosition,
+                                     {pointSize, pointSize}, 0);
         }
         lastPointPosition = newPointPosition;
 
@@ -128,7 +127,8 @@ void SignaaliDemo::render()
 
     renderer->set_render_target_screen();
     renderer->clear_screen();
-    renderer->render_texture(signalTexture.get(), {0,0}, signalTextureScale, 0);
+    renderer->render_texture(signalTexture.get(), {0,0}, renderer->get_view_scale()
+                                                         * signalTextureScale, 0);
 
     if(renderDemoInfo)
     {
@@ -192,8 +192,9 @@ void SignaaliDemo::handle_resize(unsigned int w, unsigned int h)
 {
     Demo::handle_resize(w, h);
 
-    glm::vec2 viewScale = renderer->get_view_scale();
-    signalTextureScale = viewScale;
+    signalTextureScale.x = SIGNALTEXTURE_SIZE / float(w);
+    signalTextureScale.y = SIGNALTEXTURE_SIZE / float(h);
+    printstatus(signalTextureScale.x, ":", signalTextureScale.y);
 }
 
 
