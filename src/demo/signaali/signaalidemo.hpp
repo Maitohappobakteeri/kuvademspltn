@@ -29,6 +29,7 @@ protected:
     virtual bool update(float step) override;
     virtual void render() override;
 
+    virtual void handle_keydown(SDL_Keycode k) override;
     virtual void handle_resize(unsigned int w, unsigned int h) override;
 
 private:

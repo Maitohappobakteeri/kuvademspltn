@@ -10,7 +10,7 @@ namespace
     const unsigned int SIGNALTEXTURE_SIZE = 2048;
 
     const float DEFAULT_ADVANCE_SPEED = -0.0008f;
-    const float ADVANCE_SPEED_INCREMENT = 0.00005f;
+    const float ADVANCE_SPEED_INCREMENT = 0.0001f;
 
     const float DEFAULT_POINT_SIZE = 0.0125f;
     const float POINT_SIZE_INCREMENT = 0.0025f;
@@ -118,25 +118,50 @@ void SignaaliDemo::render()
     renderer->clear_screen();
     renderer->render_texture(signalTexture.get(), {0,0}, signalTextureScale, 0);
 
-    const float lineHeight = 0.04f;
+    if(renderDemoInfo)
+    {
+        const float lineHeight = 0.04f;
 
-    paramTextBox.update(*renderer);
+        paramTextBox.update(*renderer);
 
-    renderer->render_string_box(font.get(),
-                                std::wstring(L"Advance speed: ") + std::to_wstring(advanceSpeed),
-                                {1,1,0.8f},
-                                paramTextBox.box_position({0, 1.0f - lineHeight
-                                                              - lineHeight*2*0}),
-                                paramTextBox.box_scale({1.0f, lineHeight}), 0,
-                                Renderer::StringAlign::LEFT);
+        renderer->render_string_box(font.get(),
+                                    std::wstring(L"Advance speed: ") + std::to_wstring(advanceSpeed),
+                                    {1,1,0.8f},
+                                    paramTextBox.box_position({0, 1.0f - lineHeight
+                                                                  - lineHeight*2*0}),
+                                    paramTextBox.box_scale({1.0f, lineHeight}), 0,
+                                    Renderer::StringAlign::LEFT);
 
-    renderer->render_string_line(font.get(),
-                                 std::wstring(L"Point size: ") + std::to_wstring(pointSize),
-                                 {1,1,0.8f},
-                                 paramTextBox.box_position({0, 1.0f - lineHeight
-                                                               - lineHeight*2*1}),
-                                 paramTextBox.box_scale({1.0f, lineHeight}), 0,
-                                 Renderer::StringAlign::LEFT);
+        renderer->render_string_line(font.get(),
+                                     std::wstring(L"Point size: ") + std::to_wstring(pointSize),
+                                     {1,1,0.8f},
+                                     paramTextBox.box_position({0, 1.0f - lineHeight
+                                                                   - lineHeight*2*1}),
+                                     paramTextBox.box_scale({1.0f, lineHeight}), 0,
+                                     Renderer::StringAlign::LEFT);
+    }
+}
+
+
+void SignaaliDemo::handle_keydown(SDL_Keycode k)
+{
+    Demo::handle_keydown(k);
+
+    switch(k)
+    {
+    case SDLK_u:
+        advanceSpeed -= ADVANCE_SPEED_INCREMENT;
+        break;
+    case SDLK_i:
+        advanceSpeed += ADVANCE_SPEED_INCREMENT;
+        break;
+    case SDLK_j:
+        pointSize -= POINT_SIZE_INCREMENT;
+        break;
+    case SDLK_k:
+        pointSize += POINT_SIZE_INCREMENT;
+        break;
+    }
 }
 
 
