@@ -1,5 +1,5 @@
-#ifndef FRAMEBUFFER_HPP
-#define FRAMEBUFFER_HPP
+#ifndef RENDERER_FRAMEBUFFER_HPP
+#define RENDERER_FRAMEBUFFER_HPP
 
 
 #include "texture.hpp"

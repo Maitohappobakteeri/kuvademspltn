@@ -1,5 +1,6 @@
 #include "buffer.hpp"
 
+
 Buffer::Buffer()
 {
     glGenBuffers(1, &buffer);

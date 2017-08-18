@@ -1,8 +1,10 @@
 #ifndef RENDERER_BUFFER_HPP
 #define RENDERER_BUFFER_HPP
 
+
 #include <GL/glew.h>
 #include <GL/gl.h>
+
 
 class Buffer
 {

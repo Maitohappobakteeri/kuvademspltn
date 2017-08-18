@@ -30,6 +30,7 @@ public:
         float advance;
     };
 
+
     Font(const std::string& filePath, unsigned int size);
     ~Font();
 

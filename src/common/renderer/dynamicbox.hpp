@@ -41,19 +41,11 @@ public:
         OFF_BOTH
     };
 
-    struct DynamicVec
-    {
-        glm::vec2 baseVec;
-        Relative relative;
-        Offset offsetMode;
-
-        glm::vec2 result;
-    };
 
     DynamicBox();
     ~DynamicBox();
 
-    // update results
+    // Update results
     void update(const Renderer& renderer);
     void update(const DynamicBox& dbox);
 
@@ -63,7 +55,11 @@ public:
     // Return vec relative to box scale
     glm::vec2 box_scale(const glm::vec2 vec) const;
 
+    // Set align
+    //   Align is used to align DynamicBox to a parent box(renderer) on update.
     void set_align(Align newAlign);
+
+    // Return align
     Align get_align() const;
 
     // Set position baseVec, relative and offsetMode
@@ -80,6 +76,19 @@ public:
 
 private:
 
+    // Stores information used for calculating result vector relative to a parent box(renderer)
+    //   DynamicVec.result is updated in DynamicBox::update.
+    struct DynamicVec
+    {
+        glm::vec2 baseVec;
+        Relative relative;
+        Offset offsetMode;
+
+        glm::vec2 result;
+    };
+
+
+    // Update position.result and scale.result
     void update(const glm::vec2& positionOffset, const glm::vec2& viewScale);
 
     Align align;
