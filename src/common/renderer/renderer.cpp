@@ -33,11 +33,6 @@ Renderer::~Renderer()
     placeholderTexture.reset();
     placeholderFont.reset();
 
-    while(spritegroups.size() != 0)
-    {
-        delete_spritegroup(*spritegroups.begin());
-    }
-
     while(textures.size() != 0)
     {
         delete_texture(textures.begin()->second.lock().get());
@@ -154,25 +149,6 @@ void Renderer::delete_font(Font* font)
 }
 
 
-SpriteGroup* Renderer::create_spritegroup()
-{
-    SpriteGroup* newGroup = new SpriteGroup(this);
-    spritegroups.push_back(newGroup);
-    return newGroup;
-}
-
-
-void Renderer::delete_spritegroup(SpriteGroup* sgroup)
-{
-    auto it = std::find(spritegroups.begin(), spritegroups.end(), sgroup);
-    if(it != spritegroups.end())
-    {
-        spritegroups.erase(it);
-        delete sgroup;
-    }
-}
-
-
 void Renderer::clear_screen()
 {
     // glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
@@ -191,7 +167,7 @@ void Renderer::clear_screen()
 }
 
 
-void Renderer::render_sprites()
+void Renderer::render_spritegroup(const SpriteGroup& sgroup)
 {
     Sprite::set_reference_time(SDL_GetTicks());
 
@@ -213,25 +189,25 @@ void Renderer::render_sprites()
     fullUvBuffer->bind(GL_ARRAY_BUFFER);
     glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,(void*)(0*2*4*sizeof(GLfloat)*33));
 
-    for(SpriteGroup* sgroup : spritegroups)
+    glm::vec2 sgroupPosition = sgroup.get_position();
+    glm::vec2 sgroupScale = sgroup.get_scale();
+    glm::vec2 sgroupExtendedSize = sgroup.extended_size(viewScale);
+    for(Sprite const* sprite : sgroup.sprites)
     {
-        for(Sprite* sprite : sgroup->sprites)
-        {
-            if(!sgroup->is_sprite_visible(*sprite, sgroup->extended_size(viewScale))) continue;
+        if(!sgroup.is_sprite_visible(*sprite, sgroupExtendedSize)) continue;
 
-            sprite->get_texture()->bind();
+        sprite->get_texture()->bind();
 
-            const glm::vec2 scale = sprite->get_scale() / sgroup->get_scale();
-            const glm::vec2 pos = (sprite->get_position() - sgroup->get_position())
-                                  / sgroup->get_scale();
-            glm::mat4 modelMat = glm::translate(glm::mat4(), {pos.x,pos.y, 0})
-                                * glm::rotate(glm::mat4(), sprite->get_rotation(),
-                                              {0.0f, 0.0f, -1.0f})
-                                * glm::scale(glm::mat4(), {scale.x, scale.y, 1});
-            glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
+        const glm::vec2 scale = sprite->get_scale() / sgroupScale;
+        const glm::vec2 pos = (sprite->get_position() - sgroupPosition)
+                              / sgroupScale;
+        glm::mat4 modelMat = glm::translate(glm::mat4(), {pos.x,pos.y, 0})
+                            * glm::rotate(glm::mat4(), sprite->get_rotation(),
+                                          {0.0f, 0.0f, -1.0f})
+                            * glm::scale(glm::mat4(), {scale.x, scale.y, 1});
+        glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        }
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 }
 

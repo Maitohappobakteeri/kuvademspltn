@@ -10,6 +10,7 @@
 
 class Renderer;
 
+
 class SpriteGroup
 {
 public:

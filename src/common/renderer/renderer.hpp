@@ -13,7 +13,6 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
-
 #include <glm/mat4x4.hpp>
 
 #include <string>
@@ -34,12 +33,9 @@ public:
     std::shared_ptr<Font> load_font(const std::string& filePath, unsigned int size=16);
     std::shared_ptr<Font> load_font(unsigned int ID, unsigned int size=16);
 
-    SpriteGroup* create_spritegroup();
-    void delete_spritegroup(SpriteGroup* sgroup);
-
     void clear_screen();
 
-    void render_sprites();
+    void render_spritegroup(const SpriteGroup& sgroup);
 
     // text rendering
     //
@@ -118,8 +114,6 @@ private:
 
     std::map<unsigned int, std::map<unsigned int, std::weak_ptr<Font>>> fonts;
     std::shared_ptr<Font> placeholderFont;
-
-    std::vector<SpriteGroup*> spritegroups;
 
     glm::mat4 projectionMatrix;
 
