@@ -28,6 +28,7 @@ private:
 
     std::string spriteFilename;
     SpriteModel spriteModel;
+    SpriteGroup* sgroup;
 };
 
 #endif

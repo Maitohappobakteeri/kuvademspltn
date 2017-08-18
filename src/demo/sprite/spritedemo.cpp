@@ -36,7 +36,9 @@ bool SpriteDemo::init()
     if(!Demo::init()) return false;
 
     spriteModel = read_spritedata_from_file(renderer, spriteFilename);
-    renderer->create_spritegroup()->create_sprite(create_sprite(spriteModel));
+
+    sgroup = new SpriteGroup(renderer);
+    sgroup->create_sprite(create_sprite(spriteModel));
 
     return true;
 }
@@ -44,6 +46,8 @@ bool SpriteDemo::init()
 
 void SpriteDemo::cleanup()
 {
+    delete sgroup;
+
     Demo::cleanup();
 }
 
@@ -57,5 +61,5 @@ bool SpriteDemo::update(float step)
 void SpriteDemo::render()
 {
     renderer->clear_screen();
-    renderer->render_sprites();
+    renderer->render_spritegroup(*sgroup);
 }
