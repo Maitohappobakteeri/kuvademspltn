@@ -100,6 +100,7 @@ set(COMMON_SOURCE_FILES
     src/common/renderer/spritegroup.cpp
     src/common/renderer/font.cpp
     src/common/renderer/text.cpp
+    src/common/renderer/color.cpp
 )
 
 set(COMMON_TARGET ${PROJECT_NAME})
