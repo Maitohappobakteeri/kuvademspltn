@@ -78,7 +78,7 @@ bool DisintDemo::update(float step)
 
 void DisintDemo::render()
 {
-    renderer->clear_screen();
+    renderer->clear();
     render_disint();
 }
 
