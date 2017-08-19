@@ -245,7 +245,7 @@ void Renderer::render_char(const Font::Char& ch, const Color& color, const glm::
 
 void Renderer::render_string_box(Font const* font, const std::wstring wstr, const Color& color,
                                  const glm::vec2& position, const glm::vec2& size, float rotation,
-                                 StringAlign align)
+                                 Align align)
 {
     float totalWidth = 0;
     for(unsigned int i = 0; i < wstr.size(); ++i)
@@ -267,20 +267,20 @@ void Renderer::render_string_box(Font const* font, const std::wstring wstr, cons
 
     glm::vec2 alignedPosition(position);
     // horizontal
-    if(align == LEFT || align == TOP_LEFT || align == BOTTOM_LEFT)
+    if(align == Align::LEFT || align == Align::TOP_LEFT || align == Align::BOTTOM_LEFT)
     {
         alignedPosition.x -= size.x - scaledSize.x;
     }
-    else if(align == RIGHT || align == TOP_RIGHT || align == BOTTOM_RIGHT)
+    else if(align == Align::RIGHT || align == Align::TOP_RIGHT || align == Align::BOTTOM_RIGHT)
     {
         alignedPosition.x += size.x - scaledSize.x;
     }
     // vertical
-    if(align == TOP || align == TOP_LEFT || align == TOP_RIGHT)
+    if(align == Align::TOP || align == Align::TOP_LEFT || align == Align::TOP_RIGHT)
     {
         alignedPosition.y += size.y - scaledSize.y;
     }
-    else if(align == BOTTOM || align == BOTTOM_LEFT || align == BOTTOM_RIGHT)
+    else if(align == Align::BOTTOM || align == Align::BOTTOM_LEFT || align == Align::BOTTOM_RIGHT)
     {
         alignedPosition.y -= size.y - scaledSize.y;
     }
@@ -306,7 +306,7 @@ void Renderer::render_string_box(Font const* font, const std::wstring wstr, cons
 
 void Renderer::render_string_line(Font const* font, const std::wstring wstr, const Color& color,
                                   const glm::vec2& position, const glm::vec2& size,
-                                  float rotation, StringAlign align)
+                                  float rotation, Align align)
 {
     float totalWidth = 0;
     for(unsigned int i = 0; i < wstr.size(); ++i)
@@ -319,11 +319,11 @@ void Renderer::render_string_line(Font const* font, const std::wstring wstr, con
     scaledSize.y = size.y;
 
     glm::vec2 alignedPosition(position);
-    if(align == LEFT || align == TOP_LEFT || align == BOTTOM_LEFT)
+    if(align == Align::LEFT || align == Align::TOP_LEFT || align == Align::BOTTOM_LEFT)
     {
         alignedPosition.x -= size.x - scaledSize.x;
     }
-    else if(align == RIGHT || align == TOP_RIGHT || align == BOTTOM_RIGHT)
+    else if(align == Align::RIGHT || align == Align::TOP_RIGHT || align == Align::BOTTOM_RIGHT)
     {
         alignedPosition.x += size.x - scaledSize.x;
     }
@@ -361,7 +361,7 @@ void Renderer::render_text(const Text& text)
                            std::wstring(line.start, line.end),
                            {0.7f, 1.0f, 0.0f, 1.0f},
                            line.position, line.size, text.get_rotation(),
-                           Renderer::StringAlign::LEFT);
+                           Align::LEFT);
     }
 }
 

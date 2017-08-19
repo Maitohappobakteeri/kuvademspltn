@@ -113,7 +113,7 @@ bool Demo::init()
 
     println("initializing rendering");
     initialize_rendering();
-    
+
     set_window_callbacks();
 
     return true;
@@ -232,8 +232,8 @@ bool Demo::initialize_rendering()
 
     font = renderer->load_font(RES_COMMON_FONT_INCONSOLATA_REGULAR, 32);
 
-    infoTextBox.set_scale({-0.05f, 0.95f}, DynamicBox::REL_HEIGHT, DynamicBox::OFF_WIDTH);
-    infoTextBox.set_align(DynamicBox::LEFT);
+    infoTextBox.set_scale({-0.05f, 0.95f}, Relative::HEIGHT, Offset::WIDTH);
+    infoTextBox.set_align(Align::LEFT);
 
     return true;
 }
@@ -268,21 +268,21 @@ void Demo::render_info()
                                 {1,1,0.8f},
                                 infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*0}),
                                 infoTextBox.box_scale({1.0f, lineHeight}), 0,
-                                Renderer::StringAlign::RIGHT);
+                                Align::RIGHT);
 
     renderer->render_string_line(font.get(),
                                  std::wstring(L"Update: ") + std::to_wstring(updateFreq),
                                  {1,1,0.8f},
                                  infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*1}),
                                  infoTextBox.box_scale({1.0f, lineHeight}), 0,
-                                 Renderer::StringAlign::RIGHT);
+                                 Align::RIGHT);
 
     renderer->render_string_line(font.get(),
                                  std::wstring(L"Render: ") + std::to_wstring(renderFreq),
                                  {1,1,0.8f},
                                  infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*2}),
                                  infoTextBox.box_scale({1.0f, lineHeight}), 0,
-                                 Renderer::StringAlign::RIGHT);
+                                 Align::RIGHT);
 }
 
 

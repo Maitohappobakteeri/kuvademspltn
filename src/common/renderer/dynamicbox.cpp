@@ -5,9 +5,9 @@
 
 
 DynamicBox::DynamicBox()
-    :align(CENTER),
-    position{{0,0}, REL_BOTH, OFF_NONE, {0,0}},
-    scale{{1,1}, REL_BOTH, OFF_NONE, {1,1}}
+    :align(Align::CENTER),
+    position{{0,0}, Relative::BOTH, Offset::NONE, {0,0}},
+    scale{{1,1}, Relative::BOTH, Offset::NONE, {1,1}}
 {
 
 }
@@ -35,16 +35,16 @@ void DynamicBox::update(const glm::vec2& positionOffset, const glm::vec2& viewSc
 {
     // scale
     //
-    if(scale.offsetMode == OFF_BOTH)
+    if(scale.offsetMode == Offset::BOTH)
     {
         scale.result = viewScale + scale.result;
     }
-    else if(scale.offsetMode == OFF_WIDTH)
+    else if(scale.offsetMode == Offset::WIDTH)
     {
         scale.result.x = viewScale.x + scale.baseVec.x;
         scale.result.y = scale.baseVec.y;
     }
-    else if(scale.offsetMode == OFF_HEIGHT)
+    else if(scale.offsetMode == Offset::HEIGHT)
     {
         scale.result.x = scale.baseVec.x;
         scale.result.y = viewScale.y + scale.baseVec.y;
@@ -54,31 +54,31 @@ void DynamicBox::update(const glm::vec2& positionOffset, const glm::vec2& viewSc
         scale.result = scale.baseVec;
     }
 
-    if(scale.relative == REL_BOTH)
+    if(scale.relative == Relative::BOTH)
     {
         scale.result = scale.result * viewScale;
     }
-    else if(scale.relative == REL_WIDTH)
+    else if(scale.relative == Relative::WIDTH)
     {
         scale.result.x = scale.result.x * viewScale.x;
     }
-    else if(scale.relative == REL_HEIGHT)
+    else if(scale.relative == Relative::HEIGHT)
     {
         scale.result.y = scale.result.y * viewScale.y;
     }
 
     // position
     //
-    if(position.offsetMode == OFF_BOTH)
+    if(position.offsetMode == Offset::BOTH)
     {
         position.result = viewScale + position.result;
     }
-    else if(position.offsetMode == OFF_WIDTH)
+    else if(position.offsetMode == Offset::WIDTH)
     {
         position.result.x = viewScale.x + position.baseVec.x;
         position.result.y = position.baseVec.y;
     }
-    else if(position.offsetMode == OFF_HEIGHT)
+    else if(position.offsetMode == Offset::HEIGHT)
     {
         position.result.x = position.baseVec.x;
         position.result.y = viewScale.y + position.baseVec.y;
@@ -88,34 +88,34 @@ void DynamicBox::update(const glm::vec2& positionOffset, const glm::vec2& viewSc
         position.result = position.baseVec;
     }
 
-    if(position.relative == REL_BOTH)
+    if(position.relative == Relative::BOTH)
     {
         position.result = position.result * viewScale;
     }
-    else if(position.relative == REL_WIDTH)
+    else if(position.relative == Relative::WIDTH)
     {
         position.result.x = position.result.x * viewScale.x;
     }
-    else if(position.relative == REL_HEIGHT)
+    else if(position.relative == Relative::HEIGHT)
     {
         position.result.y = position.result.y * viewScale.y;
     }
 
     // align horizontal
-    if(align == LEFT || align == TOP_LEFT || align == BOTTOM_LEFT)
+    if(align == Align::LEFT || align == Align::TOP_LEFT || align == Align::BOTTOM_LEFT)
     {
         position.result.x -= viewScale.x - scale.result.x;
     }
-    else if(align == RIGHT || align == TOP_RIGHT || align == BOTTOM_RIGHT)
+    else if(align == Align::RIGHT || align == Align::TOP_RIGHT || align == Align::BOTTOM_RIGHT)
     {
         position.result.x += viewScale.x - scale.result.x;
     }
     // vertical
-    if(align == TOP || align == TOP_LEFT || align == TOP_RIGHT)
+    if(align == Align::TOP || align == Align::TOP_LEFT || align == Align::TOP_RIGHT)
     {
         position.result.y += viewScale.y - scale.result.y;
     }
-    else if(align == BOTTOM || align == BOTTOM_LEFT || align == BOTTOM_RIGHT)
+    else if(align == Align::BOTTOM || align == Align::BOTTOM_LEFT || align == Align::BOTTOM_RIGHT)
     {
         position.result.y -= viewScale.y - scale.result.y;
     }
@@ -137,20 +137,19 @@ glm::vec2 DynamicBox::box_scale(const glm::vec2 vec) const
 }
 
 
-void DynamicBox::set_align(DynamicBox::Align newAlign)
+void DynamicBox::set_align(Align newAlign)
 {
     align = newAlign;
 }
 
 
-DynamicBox::Align DynamicBox::get_align() const
+Align DynamicBox::get_align() const
 {
     return align;
 }
 
 
-void DynamicBox::set_position(const glm::vec2& newPosition, DynamicBox::Relative rel,
-                              Offset offset)
+void DynamicBox::set_position(const glm::vec2& newPosition, Relative rel, Offset offset)
 {
     position.baseVec = newPosition;
     position.relative = rel;
@@ -164,7 +163,7 @@ glm::vec2 DynamicBox::get_position() const
 }
 
 
-void DynamicBox::set_scale(const glm::vec2& newScale, DynamicBox::Relative rel, Offset offset)
+void DynamicBox::set_scale(const glm::vec2& newScale, Relative rel, Offset offset)
 {
     scale.baseVec = newScale;
     scale.relative = rel;

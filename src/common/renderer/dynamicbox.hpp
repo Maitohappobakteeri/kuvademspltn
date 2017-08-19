@@ -2,6 +2,8 @@
 #define RENDERER_DYNAMICBOX_HPP
 
 
+#include "relative.hpp"
+
 #include "glm/glm.hpp"
 
 
@@ -11,36 +13,6 @@ class Renderer;
 class DynamicBox
 {
 public:
-
-    enum Align
-    {
-        CENTER,
-        LEFT,
-        TOP_LEFT,
-        TOP,
-        TOP_RIGHT,
-        RIGHT,
-        BOTTOM_RIGHT,
-        BOTTOM,
-        BOTTOM_LEFT
-    };
-
-    enum Relative
-    {
-        REL_NONE,
-        REL_WIDTH,
-        REL_HEIGHT,
-        REL_BOTH
-    };
-
-    enum Offset
-    {
-        OFF_NONE,
-        OFF_WIDTH,
-        OFF_HEIGHT,
-        OFF_BOTH
-    };
-
 
     DynamicBox();
     ~DynamicBox();
@@ -63,13 +35,15 @@ public:
     Align get_align() const;
 
     // Set position baseVec, relative and offsetMode
-    void set_position(const glm::vec2& newPosition, Relative rel=REL_BOTH, Offset offset=OFF_NONE);
+    void set_position(const glm::vec2& newPosition, Relative rel=Relative::BOTH,
+                      Offset offset=Offset::NONE);
 
     // Return position.result
     glm::vec2 get_position() const;
 
     // Set scale baseVec, relative and offsetMode
-    void set_scale(const glm::vec2& newScale, Relative rel=REL_BOTH, Offset offset=OFF_NONE);
+    void set_scale(const glm::vec2& newScale, Relative rel=Relative::BOTH,
+                   Offset offset=Offset::NONE);
 
     // Return scale.result
     glm::vec2 get_scale() const;

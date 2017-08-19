@@ -10,6 +10,7 @@
 #include "spritegroup.hpp"
 #include "font.hpp"
 #include "text.hpp"
+#include "relative.hpp"
 
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -34,33 +35,17 @@ public:
     std::shared_ptr<Font> load_font(unsigned int ID, unsigned int size=16);
 
     void clear_screen();
-
     void render_spritegroup(const SpriteGroup& sgroup);
-
-    // text rendering
-    //
-    enum StringAlign
-    {
-        CENTER,
-        LEFT,
-        TOP_LEFT,
-        TOP,
-        TOP_RIGHT,
-        RIGHT,
-        BOTTOM_RIGHT,
-        BOTTOM,
-        BOTTOM_LEFT
-    };
 
     // Render string scaled to fit inside bow with size
     void render_string_box(Font const* font, const std::wstring str, const Color& color,
                            const glm::vec2& position, const glm::vec2& size, float rotation,
-                           StringAlign align=CENTER);
+                           Align align=Align::CENTER);
 
     // Render string scaled to fit inside a line
     void render_string_line(Font const* font, const std::wstring str, const Color& color,
                             const glm::vec2& position, const glm::vec2& size, float rotation,
-                            StringAlign align=CENTER);
+                            Align align=Align::CENTER);
 
     void render_text(const Text& text);
 
