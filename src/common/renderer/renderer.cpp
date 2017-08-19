@@ -684,6 +684,7 @@ glm::mat4 Renderer::get_projection_matrix() const
     return projectionMatrix;
 }
 
+
 void Renderer::resize()
 {
     if(!usingFramebuffer)
