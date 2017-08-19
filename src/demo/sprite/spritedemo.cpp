@@ -60,6 +60,6 @@ bool SpriteDemo::update(float step)
 
 void SpriteDemo::render()
 {
-    renderer->clear_screen();
+    renderer->clear();
     renderer->render_spritegroup(*sgroup);
 }
