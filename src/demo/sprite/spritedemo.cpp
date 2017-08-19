@@ -35,7 +35,7 @@ bool SpriteDemo::init()
 {
     if(!Demo::init()) return false;
 
-    spriteModel = read_spritedata_from_file(renderer, spriteFilename);
+    spriteModel = load_spritemodel_from_file(renderer, spriteFilename);
 
     sgroup = new SpriteGroup(renderer);
     sgroup->create_sprite(create_sprite(spriteModel));
