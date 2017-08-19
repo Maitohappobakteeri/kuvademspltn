@@ -12,7 +12,7 @@
 
 int main()
 {
-    println(PROJECT_NAME, " - texttest");
+    println(PROJECT_NAME, " - text");
 
     // initialize rendering
     SDL_Init(SDL_INIT_VIDEO);
@@ -37,13 +37,13 @@ int main()
     // render text test
     while(!window->handle_events())
     {
-        renderer->clear_screen();
+        renderer->clear();
 
         renderer->render_string_box(font.get(),
                                      L"XxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxX",
                                      {1.0f, 0.1f, 0.0f, 1.0f},
                                      {0,0}, {1, 1}, 0,
-                                     Renderer::StringAlign::BOTTOM_RIGHT);
+                                     Align::BOTTOM_RIGHT);
 
         renderer->render_string_box(font.get(),
                                      L".........................................................",
@@ -56,7 +56,7 @@ int main()
                                     {0.7f, 1.0f, 0.0f, 1.0f},
                                     {0,0.75f+lineHeight*2},
                                     {lineWidth, lineHeight}, 0,
-                                    Renderer::StringAlign::RIGHT);
+                                    Align::RIGHT);
         // render text
         renderer->render_text(text);
 
