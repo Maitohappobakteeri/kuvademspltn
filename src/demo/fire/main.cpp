@@ -108,7 +108,7 @@ protected:
 
     virtual void render() override
     {
-        renderer->clear_screen();
+        renderer->clear();
         render_fire(*fireShader, *rectTriangleStrip, rainbow1.get_color(), rainbow2.get_color(),
                     renderer->get_projection_matrix());
     }
