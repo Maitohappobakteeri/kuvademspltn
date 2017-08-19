@@ -35,10 +35,10 @@ bool RoiskeDemo::init()
                                                             SPLATTERTEXTURE_SIZE)));
     splatterFramebuffer.reset(new Framebuffer(*splatterTexture));
 
-    splatterSpriteGroup = renderer->create_spritegroup();
+    splatterSpriteGroup = new SpriteGroup(renderer);
     splatterSpriteGroup->set_scale({30.0f, 30.0f});
 
-    splatterModel = read_spritedata_from_file(renderer, "res/roiske/blood.sprite");
+    splatterModel = load_spritemodel_from_file(renderer, "res/roiske/blood.sprite");
     splatterSprite = splatterSpriteGroup->create_sprite(create_sprite(splatterModel));
 
     return true;
@@ -47,6 +47,8 @@ bool RoiskeDemo::init()
 
 void RoiskeDemo::cleanup()
 {
+    delete splatterSpriteGroup;
+
     splatterFramebuffer.reset();
     splatterTexture.reset();
 
@@ -87,9 +89,9 @@ bool RoiskeDemo::update(float step)
 void RoiskeDemo::render()
 {
     renderer->set_render_target(*splatterFramebuffer);
-    renderer->render_sprites();
+    renderer->render_spritegroup(*splatterSpriteGroup);
     renderer->set_render_target_screen();
-    renderer->clear_screen();
+    renderer->clear();
     renderer->render_texture(splatterTexture.get(), {0,0}, {3, 3}, 0);
 }
 
