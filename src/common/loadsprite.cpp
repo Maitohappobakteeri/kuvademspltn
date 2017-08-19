@@ -3,8 +3,6 @@
 
 #include "strkilxprs/strkilxprs.hpp"
 
-#include <SDL/SDL.h>
-
 #include <regex>
 #include <fstream>
 #include <streambuf>

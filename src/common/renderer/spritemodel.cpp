@@ -1,6 +1,9 @@
 #include "spritemodel.hpp"
 
 
+#include <SDL/SDL.h>
+
+
 Sprite create_sprite(const SpriteModel& spriteData)
 {
     std::vector<Texture const*> spriteTextures;

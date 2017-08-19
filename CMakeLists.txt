@@ -98,6 +98,7 @@ set(COMMON_SOURCE_FILES
     src/common/renderer/dynamicbox.cpp
     src/common/renderer/sprite.cpp
     src/common/renderer/spritegroup.cpp
+    src/common/renderer/spritemodel.cpp
     src/common/renderer/font.cpp
     src/common/renderer/text.cpp
     src/common/renderer/color.cpp
