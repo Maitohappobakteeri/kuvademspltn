@@ -28,29 +28,42 @@ public:
     Renderer();
     ~Renderer();
 
+
+    //
+    // loaders
+
     std::shared_ptr<Texture> load_texture(const std::string& filePath);
     std::shared_ptr<Texture> load_texture(unsigned int ID);
 
     std::shared_ptr<Font> load_font(const std::string& filePath, unsigned int size=16);
     std::shared_ptr<Font> load_font(unsigned int ID, unsigned int size=16);
 
-    void clear_screen();
-    void render_spritegroup(const SpriteGroup& sgroup);
 
-    // Render string scaled to fit inside bow with size
+    void clear_screen();
+
+
+    //
+    // text
+
+    // Render string scaled to fit inside box with size
     void render_string_box(Font const* font, const std::wstring str, const Color& color,
                            const glm::vec2& position, const glm::vec2& size, float rotation,
                            Align align=Align::CENTER);
 
-    // Render string scaled to fit inside a line
+    // Render string scaled to fit inside a line (match line height)
     void render_string_line(Font const* font, const std::wstring str, const Color& color,
                             const glm::vec2& position, const glm::vec2& size, float rotation,
                             Align align=Align::CENTER);
 
     void render_text(const Text& text);
 
+
     void render_texture(Texture const* texture, const glm::vec2& position,
                         const glm::vec2& size, float rotation);
+
+
+    //
+    // shapes
 
     void render_rectangle(const Color& color, const glm::vec2& position,
                           const glm::vec2& size, float rotation);
@@ -59,12 +72,18 @@ public:
     void render_circle(const Color& color, const glm::vec2& position, const glm::vec2& size);
     void render_line(const Color& color, const glm::vec2& start, const glm::vec2& end);
 
+
+    void render_spritegroup(const SpriteGroup& sgroup);
+
+
     void set_render_target_screen();
     void set_render_target(const Framebuffer& fb);
 
-    void handle_resize(unsigned int newWidth, unsigned int newHeight);
-    glm::vec2 get_view_scale() const;
 
+    void handle_resize(unsigned int newWidth, unsigned int newHeight);
+
+
+    glm::vec2 get_view_scale() const;
     glm::mat4 get_projection_matrix() const;
 
 private:
@@ -86,7 +105,7 @@ private:
     std::unique_ptr<Buffer> rectLineStrip;
     // vertex buffer for a circle
     std::unique_ptr<Buffer> circleLineStrip;
-    // a line
+    // a line from (-1,0,0) to (1,0,0)
     std::unique_ptr<Buffer> line;
     // texture mapping that uses the full texture
     std::unique_ptr<Buffer> fullUvBuffer;
@@ -94,11 +113,16 @@ private:
     std::unique_ptr<Shader> colorShader;
     std::unique_ptr<Shader> textureShader;
 
+
+    //
+    // resource maps
+
     std::map<unsigned int, std::weak_ptr<Texture>> textures;
     std::unique_ptr<Texture> placeholderTexture;
 
     std::map<unsigned int, std::map<unsigned int, std::weak_ptr<Font>>> fonts;
     std::shared_ptr<Font> placeholderFont;
+
 
     glm::mat4 projectionMatrix;
 
