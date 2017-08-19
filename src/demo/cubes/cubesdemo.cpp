@@ -175,7 +175,7 @@ bool CubesDemo::update(float step)
 
 void CubesDemo::render()
 {
-    renderer->clear_screen();
+    renderer->clear();
     // renderer->render_rectangle({0.01,0.025,0.1}, {0,0}, renderer->get_view_scale(), 0);
     render_cube();
 }
