@@ -46,9 +46,9 @@ bool SignaaliDemo::init()
     pointTexture = renderer->load_texture("res/signaali/point.png");
 
     renderer->set_render_target(*signalFramebuffer);
-    renderer->render_rectangle({0.6,0.6,0.6}, {0,0}, {1,1}, 0);
+    renderer->clear({0.6,0.6,0.6});
     renderer->set_render_target(*signalFramebuffer2);
-    renderer->render_rectangle({0.6,0.6,0.6}, {0,0}, {1,1}, 0);
+    renderer->clear({0.6,0.6,0.6});
 
     sampleSpec.format = PA_SAMPLE_FLOAT32NE;
     sampleSpec.channels = 2;
@@ -60,8 +60,8 @@ bool SignaaliDemo::init()
 
     // SDL_GL_SetSwapInterval(0);
 
-    paramTextBox.set_scale({-0.05f, 0.95f}, DynamicBox::REL_HEIGHT, DynamicBox::OFF_WIDTH);
-    paramTextBox.set_align(DynamicBox::RIGHT);
+    paramTextBox.set_scale({-0.05f, 0.95f}, Relative::HEIGHT, Offset::WIDTH);
+    paramTextBox.set_align(Align::RIGHT);
 
     return true;
 }
@@ -126,7 +126,7 @@ void SignaaliDemo::render()
     renderer->render_texture(signalTexture.get(), {0,0}, {1,1}, 0);
 
     renderer->set_render_target_screen();
-    renderer->clear_screen();
+    renderer->clear();
     renderer->render_texture(signalTexture.get(), {0,0}, renderer->get_view_scale()
                                                          * signalTextureScale, 0);
 
@@ -142,7 +142,7 @@ void SignaaliDemo::render()
                                     paramTextBox.box_position({0, 1.0f - lineHeight
                                                                   - lineHeight*2*0}),
                                     paramTextBox.box_scale({1.0f, lineHeight}), 0,
-                                    Renderer::StringAlign::LEFT);
+                                    Align::LEFT);
 
         renderer->render_string_line(font.get(),
                                      std::wstring(L"Point size: ") + std::to_wstring(pointSize),
@@ -150,7 +150,7 @@ void SignaaliDemo::render()
                                      paramTextBox.box_position({0, 1.0f - lineHeight
                                                                    - lineHeight*2*1}),
                                      paramTextBox.box_scale({1.0f, lineHeight}), 0,
-                                     Renderer::StringAlign::LEFT);
+                                     Align::LEFT);
 
         renderer->render_string_line(font.get(),
                                      std::wstring(L"Use lines: ") + std::to_wstring(useLines),
@@ -158,7 +158,7 @@ void SignaaliDemo::render()
                                      paramTextBox.box_position({0, 1.0f - lineHeight
                                                                 - lineHeight*2*2}),
                                      paramTextBox.box_scale({1.0f, lineHeight}), 0,
-                                     Renderer::StringAlign::LEFT);
+                                     Align::LEFT);
     }
 }
 
