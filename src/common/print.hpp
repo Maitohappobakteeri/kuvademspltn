@@ -13,6 +13,7 @@ void enable_print();
 void disable_print();
 bool is_print_enabled();
 
+
 template <class P>
 void insert_all(std::ostream& ostream, const P& insertThis)
 {

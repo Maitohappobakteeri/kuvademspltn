@@ -1,9 +1,11 @@
 #ifndef DESKTOP_WINDOW_HPP
 #define DESKTOP_WINDOW_HPP
 
+
 #include <SDL.h>
 
 #include <functional>
+
 
 class Window
 {
@@ -37,5 +39,6 @@ private:
     std::function<void(float, float, int)> mouseDownCallback;
     std::function<void(float, float, int)> mouseUpCallback;
 };
+
 
 #endif
