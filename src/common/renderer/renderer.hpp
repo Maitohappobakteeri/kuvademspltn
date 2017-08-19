@@ -56,6 +56,7 @@ public:
                             const glm::vec2& position, const glm::vec2& size, float rotation,
                             Align align=Align::CENTER);
 
+    // render_text not yet ready!!!
     void render_text(const Text& text);
 
 
