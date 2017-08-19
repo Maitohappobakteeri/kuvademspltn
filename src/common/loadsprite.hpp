@@ -9,8 +9,8 @@
 #include <vector>
 
 
-SpriteModel parse_spritedata(Renderer* renderer, const std::string& spriteString);
-SpriteModel read_spritedata_from_file(Renderer* renderer, const std::string& filePath);
-Sprite create_sprite(const SpriteModel& SpriteModel);
+SpriteModel parse_spritemodel(Renderer* renderer, const std::string& spriteString);
+SpriteModel load_spritemodel_from_file(Renderer* renderer, const std::string& filename);
+
 
 #endif

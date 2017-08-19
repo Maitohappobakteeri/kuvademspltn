@@ -20,4 +20,7 @@ struct SpriteModel
 };
 
 
+Sprite create_sprite(const SpriteModel& SpriteModel);
+
+
 #endif

@@ -75,7 +75,7 @@ namespace
 }
 
 
-SpriteModel parse_spritedata(Renderer* renderer, const std::string& spriteString)
+SpriteModel parse_spritemodel(Renderer* renderer, const std::string& spriteString)
 {
     // create Map from spriteString
     prs::Map map(spriteString);
@@ -168,37 +168,16 @@ SpriteModel parse_spritedata(Renderer* renderer, const std::string& spriteString
 }
 
 
-SpriteModel read_spritedata_from_file(Renderer* renderer, const std::string& filePath)
+SpriteModel load_spritemodel_from_file(Renderer* renderer, const std::string& filename)
 {
     try
     {
-        return parse_spritedata(renderer, prs::read_full_file(filePath));
+        return parse_spritemodel(renderer, prs::read_full_file(filename));
     }
     catch(std::runtime_error& e)
     {
-        throw std::runtime_error(std::string("file: \"") + filePath
+        throw std::runtime_error(std::string("file: \"") + filename
                                  + "\" -> "
                                  + e.what());
-    }
-}
-
-
-Sprite create_sprite(const SpriteModel& spriteData)
-{
-    std::vector<Texture const*> spriteTextures;
-    for(const std::shared_ptr<Texture>& sharedPtr : spriteData.textures)
-    {
-        spriteTextures.push_back(sharedPtr.get());
-    }
-
-    if(spriteData.useCurrentTime)
-    {
-        return Sprite(spriteTextures, spriteData.frameDuration, SDL_GetTicks(), {0,0}, {1,1},
-                      spriteData.loop);
-    }
-    else
-    {
-        return Sprite(spriteTextures, spriteData.frameDuration, spriteData.syncTime, {0,0}, {1,1},
-                      spriteData.loop);
     }
 }
