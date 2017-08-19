@@ -149,10 +149,16 @@ void Renderer::delete_font(Font* font)
 }
 
 
-void Renderer::clear_screen()
+void Renderer::clear()
 {
-    // glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
-    glClearColor(0, 0, 0, 1.0f);
+    clear(Color::BLACK);
+}
+
+
+void Renderer::clear(const Color& color)
+{
+    glClearColor(color.r, color.g, color.b, color.a);
+    glClearColor(0, 0, 0, 1);
     glClearDepth(1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

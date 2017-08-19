@@ -39,7 +39,8 @@ public:
     std::shared_ptr<Font> load_font(unsigned int ID, unsigned int size=16);
 
 
-    void clear_screen();
+    void clear();
+    void clear(const Color& color);
 
 
     //
