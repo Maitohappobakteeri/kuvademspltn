@@ -8,7 +8,7 @@
 
 namespace
 {
-    const unsigned int SPLATTERTEXTURE_SIZE = 2080;
+    const unsigned int SPLATTERTEXTURE_SIZE = 2048;
     const float RESET_TIME = 0.3f;
 }
 
@@ -34,6 +34,8 @@ bool RoiskeDemo::init()
     splatterTexture.reset(new Texture(Texture::create_empty(SPLATTERTEXTURE_SIZE,
                                                             SPLATTERTEXTURE_SIZE)));
     splatterFramebuffer.reset(new Framebuffer(*splatterTexture));
+    renderer->set_render_target(*splatterFramebuffer);
+    renderer->clear();
 
     splatterSpriteGroup = new SpriteGroup(renderer);
     splatterSpriteGroup->set_scale({30.0f, 30.0f});
