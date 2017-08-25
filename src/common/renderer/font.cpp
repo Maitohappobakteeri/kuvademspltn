@@ -253,17 +253,18 @@ void Font::load_font(const std::string& filename, unsigned int size)
             }
 
             // write uvData
-            uvData.push_back((float(posX) + 0.5f) / float(TEX_SIZE));
-            uvData.push_back((float(posY) + 0.5f) / float(TEX_SIZE));
+            const float uvOffset = 0.55555555f;
+            uvData.push_back((float(posX) + uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posY) + uvOffset) / float(TEX_SIZE));
 
-            uvData.push_back((float(posX + width) - 0.5f) / float(TEX_SIZE));
-            uvData.push_back((float(posY) + 0.5f) / float(TEX_SIZE));
+            uvData.push_back((float(posX + width) - uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posY) + uvOffset) / float(TEX_SIZE));
 
-            uvData.push_back((float(posX) + 0.5f) / float(TEX_SIZE));
-            uvData.push_back((float(posY + height) - 0.5f) / float(TEX_SIZE));
+            uvData.push_back((float(posX) + uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posY + height) - uvOffset) / float(TEX_SIZE));
 
-            uvData.push_back((float(posX + width) - 0.5f) / float(TEX_SIZE));
-            uvData.push_back((float(posY + height) - 0.5f) / float(TEX_SIZE));
+            uvData.push_back((float(posX + width) - uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posY + height) - uvOffset) / float(TEX_SIZE));
 
             // create Char
             characters[charcode] = Char{(wchar_t) charcode, texture, uvBuffer.get(),
