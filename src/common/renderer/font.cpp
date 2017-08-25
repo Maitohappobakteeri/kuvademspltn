@@ -253,7 +253,7 @@ void Font::load_font(const std::string& filename, unsigned int size)
             }
 
             // write uvData
-            const float uvOffset = 0.55555555f;
+            const float uvOffset = 0.75f;
             uvData.push_back((float(posX) + uvOffset) / float(TEX_SIZE));
             uvData.push_back((float(posY) + uvOffset) / float(TEX_SIZE));
 
