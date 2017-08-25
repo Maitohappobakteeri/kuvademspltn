@@ -42,7 +42,8 @@ namespace
 Demo::Demo(const Demo::Args& args, const std::wstring& command)
      :window{nullptr}, renderer(nullptr),
       updateRate(60), renderDemoInfo(true), command(command),
-      renderFreq(0), updateFreq(0), args(args)
+      renderFreq(0), updateFreq(0), args(args),
+      updateTimeCounter(0), lastUpdateTime(0)
 {
 
 }
@@ -60,6 +61,7 @@ int Demo::run()
 
     // main loop
     println("starting main loop");
+    lastUpdateTime = SDL_GetTicks();
     bool gameRunning = true;
     while(gameRunning)
     {
@@ -290,12 +292,9 @@ bool Demo::update_demo()
 {
     double timeBetweenUpdates = 1.0 / float(updateRate);
 
-    static double updateTimeCounter = 0;
-    static unsigned int lastTime = SDL_GetTicks();
-
     unsigned int newTime = SDL_GetTicks();
-    updateTimeCounter += double(newTime - lastTime) / 1000.0;
-    lastTime = newTime;
+    updateTimeCounter += double(newTime - lastUpdateTime) / 1000.0;
+    lastUpdateTime = newTime;
 
     unsigned int updateCounter = 0;
     while(updateTimeCounter >= timeBetweenUpdates)

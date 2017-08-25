@@ -111,6 +111,9 @@ private:
 
     Args args;
     bool usingXWindow;
+
+    double updateTimeCounter;
+    unsigned int lastUpdateTime;
 };
 
 
