@@ -257,14 +257,14 @@ void Font::load_font(const std::string& filename, unsigned int size)
             uvData.push_back((float(posX) + uvOffset) / float(TEX_SIZE));
             uvData.push_back((float(posY) + uvOffset) / float(TEX_SIZE));
 
-            uvData.push_back((float(posX + width) - uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posX + width) - 2.0f * uvOffset) / float(TEX_SIZE));
             uvData.push_back((float(posY) + uvOffset) / float(TEX_SIZE));
 
             uvData.push_back((float(posX) + uvOffset) / float(TEX_SIZE));
-            uvData.push_back((float(posY + height) - uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posY + height) - 2.0f * uvOffset) / float(TEX_SIZE));
 
-            uvData.push_back((float(posX + width) - uvOffset) / float(TEX_SIZE));
-            uvData.push_back((float(posY + height) - uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posX + width) - 2.0f * uvOffset) / float(TEX_SIZE));
+            uvData.push_back((float(posY + height) - 2.0f * uvOffset) / float(TEX_SIZE));
 
             // create Char
             characters[charcode] = Char{(wchar_t) charcode, texture, uvBuffer.get(),
