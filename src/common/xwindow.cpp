@@ -60,6 +60,9 @@ struct XWindow::xvar
     GLXContext glc;
 
     int deleteWindowAtom;
+
+    int width;
+    int height;
 };
 
 
@@ -84,6 +87,11 @@ XWindow::XWindow(bool useRoot)
     set_window_name(PROJECT_NAME);
     create_gl_context();
     var->deleteWindowAtom = get_delete_window_atom(var->display, var->window);
+
+    XWindowAttributes gwa;
+    XGetWindowAttributes(var->display, var->window, &gwa);
+    var->width = gwa.width;
+    var->height = gwa.height;
 }
 
 
@@ -100,6 +108,11 @@ XWindow::XWindow(int wid)
     set_window_name(PROJECT_NAME);
     create_gl_context();
     var->deleteWindowAtom = get_delete_window_atom(var->display, var->window);
+
+    XWindowAttributes gwa;
+    XGetWindowAttributes(var->display, var->window, &gwa);
+    var->width = gwa.width;
+    var->height = gwa.height;
 }
 
 
@@ -147,12 +160,15 @@ bool XWindow::handle_events()
             case Expose:
                 break;
 
-            case ResizeRequest:
-                XWindowAttributes gwa;
-                XGetWindowAttributes(var->display, var->window, &gwa);
-                if(resizeCallback)
+            case ConfigureNotify:
+                if(e.xconfigure.width != var->width || e.xconfigure.height != var->height)
                 {
-                    resizeCallback(gwa.width, gwa.height);
+                    var->width = e.xconfigure.width;
+                    var->height = e.xconfigure.height;
+                    if(resizeCallback)
+                    {
+                        resizeCallback(var->width, var->height);
+                    }
                 }
                 break;
 
@@ -174,12 +190,9 @@ bool XWindow::handle_events()
 void XWindow::set_resize_callback(std::function<void(unsigned int, unsigned int)> callbk)
 {
     resizeCallback = callbk;
-
-    XWindowAttributes gwa;
-    XGetWindowAttributes(var->display, var->window, &gwa);
     if(resizeCallback)
     {
-        resizeCallback(gwa.width, gwa.height);
+        resizeCallback(var->width, var->height);
     }
 }
 
