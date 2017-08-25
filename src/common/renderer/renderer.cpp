@@ -158,7 +158,6 @@ void Renderer::clear()
 void Renderer::clear(const Color& color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
-    glClearColor(0, 0, 0, 1);
     glClearDepth(1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
