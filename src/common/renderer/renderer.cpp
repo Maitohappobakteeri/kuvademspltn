@@ -3,10 +3,10 @@
 
 #include "resid.hpp"
 #include "print.hpp"
+#include "time.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
-#include <SDL.h>
 
 #include <algorithm>
 #include <iostream>
@@ -177,7 +177,7 @@ void Renderer::clear(const Color& color)
 
 void Renderer::render_spritegroup(const SpriteGroup& sgroup)
 {
-    Sprite::set_reference_time(SDL_GetTicks());
+    Sprite::set_reference_time(time_ms());
 
     textureShader->use();
 

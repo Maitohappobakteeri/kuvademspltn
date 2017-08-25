@@ -4,6 +4,7 @@
 #include "resid.hpp"
 #include "loadsprite.hpp"
 #include "print.hpp"
+#include "time.hpp"
 
 #include <iostream>
 #include <thread>
@@ -61,7 +62,7 @@ int Demo::run()
 
     // main loop
     println("starting main loop");
-    lastUpdateTime = SDL_GetTicks();
+    lastUpdateTime = time_ms();
     bool gameRunning = true;
     while(gameRunning)
     {
@@ -80,7 +81,7 @@ int Demo::run()
             window.window->display();
         }
 
-        renderFreqCounter.update(SDL_GetTicks(), renderFreq);
+        renderFreqCounter.update(time_ms(), renderFreq);
 
         // printstatus("render: ", renderFreq, " ", "update: ", updateFreq);
         short_sleep();
@@ -292,7 +293,7 @@ bool Demo::update_demo()
 {
     double timeBetweenUpdates = 1.0 / float(updateRate);
 
-    unsigned int newTime = SDL_GetTicks();
+    unsigned int newTime = time_ms();
     updateTimeCounter += double(newTime - lastUpdateTime) / 1000.0;
     lastUpdateTime = newTime;
 
