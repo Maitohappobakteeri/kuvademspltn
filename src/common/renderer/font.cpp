@@ -199,8 +199,10 @@ void Font::load_font(const std::string& filename, unsigned int size)
     Texture* texture = new Texture();
     uvBuffer.reset(new Buffer());
 
-    int posX = 0;
-    int posY = 0;
+    const int EMPTY_SPACE_BETWEEN_CHARS = 1; // 1 pixel
+
+    int posX = EMPTY_SPACE_BETWEEN_CHARS;
+    int posY = EMPTY_SPACE_BETWEEN_CHARS;
 
     int lineHeight = face->size->metrics.height >> 6;
 
@@ -217,8 +219,8 @@ void Font::load_font(const std::string& filename, unsigned int size)
 
             if(posX + width >= TEX_SIZE)
             {
-                posX = 0;
-                posY += maxHeight;
+                posX = EMPTY_SPACE_BETWEEN_CHARS;
+                posY += maxHeight + EMPTY_SPACE_BETWEEN_CHARS;
             }
             if(posY + height >= TEX_SIZE)
             {
@@ -231,8 +233,8 @@ void Font::load_font(const std::string& filename, unsigned int size)
                     bitmapData[i] = 0;
                 }
 
-                posX = 0;
-                posY = 0;
+                posX = EMPTY_SPACE_BETWEEN_CHARS;
+                posY = EMPTY_SPACE_BETWEEN_CHARS;
                 maxHeight = 0;
             }
             maxHeight = std::max(maxHeight, height);
@@ -277,7 +279,7 @@ void Font::load_font(const std::string& filename, unsigned int size)
                                         {float(width)/lineHeight, float(height)/lineHeight},
                                         float(advance)/lineHeight};
 
-            posX += width;
+            posX += width + EMPTY_SPACE_BETWEEN_CHARS;
         }
 
         charcode = FT_Get_Next_Char(face, charcode, &gindex);
