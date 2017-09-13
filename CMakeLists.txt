@@ -72,6 +72,7 @@ ExternalProject_Add(prs
    INSTALL_DIR ${CMAKE_BINARY_DIR}/
    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/
    BUILD_ALWAYS 0
+   DOWNLOAD_COMMAND git submodule update --init --recursive
 )
 
 include_directories(${SDL2_INCLUDE_DIRS})
