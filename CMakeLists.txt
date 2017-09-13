@@ -83,12 +83,13 @@ include_directories(${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2
 
 set(COMMON_SOURCE_FILES
     src/common/demo.cpp
-    src/common/window.cpp
-    src/common/xwindow.cpp
     src/common/loadsprite.cpp
     src/common/print.cpp
     src/common/residgenerator.cpp
     src/common/rng.cpp
+
+    src/common/window/window.cpp
+    src/common/window/xwindow.cpp
 
     src/common/renderer/renderer.cpp
     src/common/renderer/shader.cpp

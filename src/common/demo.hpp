@@ -4,8 +4,8 @@
 
 #include "project.hpp"
 
-#include "window.hpp"
-#include "xwindow.hpp"
+#include "window/window.hpp"
+#include "window/xwindow.hpp"
 #include "renderer/renderer.hpp"
 #include "renderer/dynamicbox.hpp"
 
