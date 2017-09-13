@@ -634,6 +634,8 @@ void Renderer::init_gl()
                                  "res/common/shader/color.vertexshader", GL_VERTEX_SHADER));
     textureShader.reset(new Shader("res/common/shader/texture.fragmentshader", GL_FRAGMENT_SHADER,
                                    "res/common/shader/texture.vertexshader", GL_VERTEX_SHADER));
+
+    set_render_target_screen();
 }
 
 
