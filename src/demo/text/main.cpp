@@ -2,7 +2,7 @@
 #include "project.hpp"
 #include "print.hpp"
 
-#include "window.hpp"
+#include "window/window.hpp"
 #include "renderer/renderer.hpp"
 #include "renderer/font.hpp"
 
