@@ -68,11 +68,10 @@ include_directories(${CMAKE_BINARY_DIR}/include)
 
 include(ExternalProject)
 ExternalProject_Add(prs
-   SOURCE_DIR ${CMAKE_SOURCE_DIR}/strkilxprs/
+   SOURCE_DIR ${CMAKE_SOURCE_DIR}/src/common/strkilxprs/
    INSTALL_DIR ${CMAKE_BINARY_DIR}/
    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/
    BUILD_ALWAYS 0
-   DOWNLOAD_COMMAND git submodule update --init --recursive
 )
 
 include_directories(${SDL2_INCLUDE_DIRS})
