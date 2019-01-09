@@ -1,0 +1,19 @@
+
+line          =   asdloihjoqiwue908up0zixciåolk       ;
+
+list =              [
+aaaaaa,
+bbbbbbbbbbbbbb          ,
+cccccccc        ];
+
+kahvitauko = {
+    kahvinkeitin = kahvinkeitin;
+    kahvi = kahvi;
+};
+
+
+blockTest = ( '00 0' "  "0+0088990++++++0 +003431232 00++++zx+z+0påoipåoqiwe''  +0+0+0 +0 +0 ) ;
+
+
+stringTest =    "\\ \\ \\ \\\\ \"\" \"  \n\n\n     \" some text here  \"";
+fourNewlines = "1. start\n2.\n3.\n4.\n5. end";
