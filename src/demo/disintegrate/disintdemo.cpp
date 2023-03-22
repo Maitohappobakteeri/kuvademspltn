@@ -52,7 +52,10 @@ bool DisintDemo::init()
     fullUvBuffer->buffer_data(GL_ARRAY_BUFFER, uvpoints,
                               sizeof(uvpoints), GL_STATIC_DRAW);
 
-    texture = renderer->load_texture(RES_COMMON_PLACEHOLDER);
+    texture = renderer->load_texture(RES_COMMON_JENNA);
+
+    colorCycle.set_brightness_range(0.8, 1.0, 0.0001);
+    colorCycle.set_saturation_range(0.1, 0.5, 0.0002);
 
     return true;
 }
@@ -72,6 +75,7 @@ void DisintDemo::cleanup()
 
 bool DisintDemo::update(float step)
 {
+    colorCycle.advance(step);
     return false;
 }
 
@@ -100,11 +104,11 @@ void DisintDemo::render_disint() const
     static int mvpId = disintShader->get_uniform_location("mvpMatrix");
     static int colorId = disintShader->get_uniform_location("disintColor");
     static int timeId = disintShader->get_uniform_location("time");
-    glUniform4f(colorId, 0.2,0.1,0.6,1);
+    Color color = colorCycle.get_color();
+    glUniform4f(colorId, color.r, color.g, color.b, 1);
     glUniform1f(timeId, (SDL_GetTicks() % (1000 * 10)) / 1000.0f);
 
-    glm::mat4 modelMat = glm::mat4();
-    glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((renderer->get_projection_matrix()
-                                              * modelMat)[0][0]));
+    glm::mat4 modelMat = glm::mat4(1.0);
+    glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((modelMat)[0][0]));
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

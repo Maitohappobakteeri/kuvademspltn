@@ -1,11 +1,9 @@
-#version 130
+attribute highp vec3 modelVertex;
+attribute highp vec3 inNormal;
+uniform highp mat4 mvpMatrix;
+uniform highp mat4 normalRotationMatrix;
 
-in vec3 modelVertex;
-in vec3 inNormal;
-uniform mat4 mvpMatrix = mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
-uniform mat4 normalRotationMatrix = mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
-
-out vec3 normal;
+varying highp vec3 normal;
 
 void main()
 {

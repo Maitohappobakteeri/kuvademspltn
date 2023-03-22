@@ -5,11 +5,8 @@
 #include "project.hpp"
 
 #include "window/window.hpp"
-#include "window/xwindow.hpp"
 #include "renderer/renderer.hpp"
 #include "renderer/dynamicbox.hpp"
-
-#include <boost/program_options.hpp>
 
 
 class FrequencyCounter
@@ -50,13 +47,13 @@ public:
         int rootWindowID = -1;
     };
 
-    static Args create_args(const boost::program_options::variables_map& vm);
-    static boost::program_options::options_description options();
+    static Args create_args();
 
     Demo(const Args& args, const std::wstring& command);
     ~Demo();
 
     int run();
+    bool run_one();
 
 protected:
 
@@ -76,7 +73,6 @@ protected:
     union
     {
         Window* window;
-        XWindow* xwindow;
     } window;
 
     Renderer* renderer;

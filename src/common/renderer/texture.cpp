@@ -37,8 +37,8 @@ Texture::Texture(Texture* placeholder)
 }
 
 
-Texture::Texture(GLuint ID)
-    :filePath(""), texture(0), width(0), height(0), isLoaded(false)
+Texture::Texture(GLuint ID, int w, int h)
+    :filePath(""), texture(0), width(w), height(h), isLoaded(false)
 {
     set_texture(ID);
 }
@@ -93,7 +93,7 @@ Texture Texture::create_empty(unsigned int width, unsigned height)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    return Texture(texture);
+    return Texture(texture, width, height);
 }
 
 
@@ -111,11 +111,11 @@ void Texture::set_texture(GLuint ID)
     int w,h;
 
     bind();
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+    // glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+    // glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
-    width = w;
-    height = h;
+    // width = 64;
+    // height = 64;
 }
 
 
@@ -291,4 +291,9 @@ unsigned int Texture::get_height() const
 bool Texture::is_loaded() const
 {
     return isLoaded;
+}
+
+void Texture::set_size(int w, int h) {
+    width = w;
+    height = h;
 }

@@ -151,7 +151,7 @@ void Renderer::delete_font(Font* font)
 
 void Renderer::clear()
 {
-    clear(Color::BLACK);
+    clear(Color::WHITE);
 }
 
 
@@ -213,10 +213,10 @@ void Renderer::render_spritegroup(const SpriteGroup& sgroup)
         const glm::vec2 scale = sprite->get_scale() / sgroupScale;
         const glm::vec2 pos = (sprite->get_position() - sgroupPosition)
                               / sgroupScale;
-        glm::mat4 modelMat = glm::translate(glm::mat4(), {pos.x,pos.y, 0})
-                            * glm::rotate(glm::mat4(), sprite->get_rotation(),
+        glm::mat4 modelMat = glm::translate(glm::mat4(1.0), {pos.x,pos.y, 0})
+                            * glm::rotate(glm::mat4(1.0), sprite->get_rotation(),
                                           {0.0f, 0.0f, -1.0f})
-                            * glm::scale(glm::mat4(), {scale.x, scale.y, 1});
+                            * glm::scale(glm::mat4(1.0), {scale.x, scale.y, 1});
         glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
         // render
@@ -253,9 +253,9 @@ void Renderer::render_char(const Font::Char& ch, const Color& color, const glm::
 
     // calc model matrix
     glm::mat4 modelMat = stringMat
-                         * glm::translate(glm::mat4(),
+                         * glm::translate(glm::mat4(1.0),
                                           2.0f * glm::vec3(ch.position.x, ch.position.y, 0))
-                         * glm::scale(glm::mat4(), {ch.scale.x, ch.scale.y, 1});
+                         * glm::scale(glm::mat4(1.0), {ch.scale.x, ch.scale.y, 1});
     glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
     // render
@@ -317,14 +317,14 @@ void Renderer::render_string_box(Font const* font, const std::wstring wstr, cons
     {
         const Font::Char ch = font->get_character(wstr[i]);
         render_char(ch, color,
-                    glm::translate(glm::mat4(),
+                    glm::translate(glm::mat4(1.0),
                                    {alignedPosition.x, alignedPosition.y, 0})
-                    * glm::rotate(glm::mat4(), rotation, {0.0f, 0.0f, -1.0f})
-                    * glm::scale(glm::mat4(),
+                    * glm::rotate(glm::mat4(1.0), rotation, {0.0f, 0.0f, -1.0f})
+                    * glm::scale(glm::mat4(1.0),
                                  {scaledSize.x, scaledSize.y, 1})
-                    * (glm::translate(glm::mat4(),
+                    * (glm::translate(glm::mat4(1.0),
                                       {(currentWidth * 2.0f + ch.advance) / totalWidth, 0, 0})
-                       * glm::scale(glm::mat4(),
+                       * glm::scale(glm::mat4(1.0),
                                     {1.0f / totalWidth, 1.0f, 1})));
         currentWidth += ch.advance;
     }
@@ -364,14 +364,14 @@ void Renderer::render_string_line(Font const* font, const std::wstring wstr, con
     {
         const Font::Char ch = font->get_character(wstr[i]);
         render_char(ch, color,
-                    glm::translate(glm::mat4(),
+                    glm::translate(glm::mat4(1.0),
                                    {alignedPosition.x, alignedPosition.y, 0})
-                    * glm::rotate(glm::mat4(), rotation, {0.0f, 0.0f, -1.0f})
-                    * glm::scale(glm::mat4(),
+                    * glm::rotate(glm::mat4(1.0), rotation, {0.0f, 0.0f, -1.0f})
+                    * glm::scale(glm::mat4(1.0),
                                  {scaledSize.x, scaledSize.y, 1})
-                    * (glm::translate(glm::mat4(),
+                    * (glm::translate(glm::mat4(1.0),
                                       {(currentWidth * 2.0f + ch.advance) / totalWidth, 0, 0})
-                       * glm::scale(glm::mat4(),
+                       * glm::scale(glm::mat4(1.0),
                                     {1.0f / totalWidth, 1.0f, 1})));
         currentWidth += ch.advance;
     }
@@ -421,10 +421,10 @@ void Renderer::render_texture(Texture const* texture, const glm::vec2& position,
     texture->bind();
 
     // calc model matrix
-    glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x,position.y, 0})
-                         * glm::rotate(glm::mat4(), rotation,
+    glm::mat4 modelMat = glm::translate(glm::mat4(1.0), {position.x,position.y, 0})
+                         * glm::rotate(glm::mat4(1.0), rotation,
                                       {0.0f, 0.0f, -1.0f})
-                         * glm::scale(glm::mat4(), {size.x, size.y, 1});
+                         * glm::scale(glm::mat4(1.0), {size.x, size.y, 1});
     glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
     // render
@@ -451,9 +451,9 @@ void Renderer::render_rectangle(const Color& color, const glm::vec2& position,
     glUniform4f(colId, color.r, color.g, color.b, color.a);
 
     // calc model matrix
-    glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x, position.y, 0})
-                         * glm::rotate(glm::mat4(),rotation, {0.0f, 0.0f, -1.0f})
-                         * glm::scale(glm::mat4(), {size.x, size.y, 1});
+    glm::mat4 modelMat = glm::translate(glm::mat4(1.0), {position.x, position.y, 0})
+                         * glm::rotate(glm::mat4(1.0),rotation, {0.0f, 0.0f, -1.0f})
+                         * glm::scale(glm::mat4(1.0), {size.x, size.y, 1});
     glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
     // render
@@ -478,9 +478,9 @@ void Renderer::render_rectangle_outline(const Color& color, const glm::vec2& pos
     glUniform4f(colId, color.r, color.g, color.b, color.a);
 
     // calc model matrix
-    glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x, position.y, 0})
-                         * glm::rotate(glm::mat4(),rotation, {0.0f, 0.0f, -1.0f})
-                         * glm::scale(glm::mat4(), {size.x, size.y, 1});
+    glm::mat4 modelMat = glm::translate(glm::mat4(1.0), {position.x, position.y, 0})
+                         * glm::rotate(glm::mat4(1.0),rotation, {0.0f, 0.0f, -1.0f})
+                         * glm::scale(glm::mat4(1.0), {size.x, size.y, 1});
     glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
     // render
@@ -505,8 +505,8 @@ void Renderer::render_circle(const Color& color, const glm::vec2& position, cons
     glUniform4f(colId, color.r, color.g, color.b, color.a);
 
     // calc model matrix
-    glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x, position.y, 0})
-                        * glm::scale(glm::mat4(), {size.x, size.y, 1});
+    glm::mat4 modelMat = glm::translate(glm::mat4(1.0), {position.x, position.y, 0})
+                        * glm::scale(glm::mat4(1.0), {size.x, size.y, 1});
     glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
     // render
@@ -543,9 +543,9 @@ void Renderer::render_line(const Color& color, const glm::vec2& start, const glm
     }
 
     // calc model matrix
-    glm::mat4 modelMat = glm::translate(glm::mat4(), {position.x, position.y, 0})
-                         * glm::rotate(glm::mat4(), rotation, {0.0f, 0.0f, 1.0f})
-                         * glm::scale(glm::mat4(), {scale, scale, 1});
+    glm::mat4 modelMat = glm::translate(glm::mat4(1.0), {position.x, position.y, 0})
+                         * glm::rotate(glm::mat4(1.0), rotation, {0.0f, 0.0f, 1.0f})
+                         * glm::scale(glm::mat4(1.0), {scale, scale, 1});
     glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
     // render

@@ -23,26 +23,15 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE
         "${CMAKE_CXX_FLAGS_RELEASE} -O3"
     )
-    set(CMAKE_CXX_COMPILER ${GPP_COMPILER})
+    set(CMAKE_CXX_COMPILER "emcc")
 endif()
 
 find_package(PNG)
-find_package(GLEW)
 find_package(OpenGL)
-find_package(Boost)
 find_package(Freetype)
-
-INCLUDE(FindPkgConfig)
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
+find_package(SDL2)
 
 INCLUDE(CheckIncludeFileCXX)
-CHECK_INCLUDE_FILE_CXX("glm/glm.hpp" HAS_GLM)
-
-IF(NOT HAS_GLM)
-  UNSET(HAS_GLM CACHE)
-  message(FATAL_ERROR "glm/glm.hpp not found" )
-ENDIF()
 
 if(NOT ${PNG_FOUND})
     message(FATAL_ERROR)
@@ -65,6 +54,7 @@ endif()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 include_directories(${CMAKE_BINARY_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 include(ExternalProject)
 ExternalProject_Add(prs
@@ -89,7 +79,6 @@ set(COMMON_SOURCE_FILES
     src/common/rng.cpp
 
     src/common/window/window.cpp
-    src/common/window/xwindow.cpp
 
     src/common/renderer/renderer.cpp
     src/common/renderer/shader.cpp
@@ -118,9 +107,8 @@ target_link_libraries(${COMMON_TARGET} ${GLEW_LIBRARIES})
 target_link_libraries(${COMMON_TARGET} ${OPENGL_gl_LIBRARY})
 target_link_libraries(${COMMON_TARGET} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(${COMMON_TARGET} ${FREETYPE_LIBRARIES})
-target_link_libraries(${COMMON_TARGET} boost_program_options)
 target_link_libraries(${COMMON_TARGET} strkilxprs)
-
+set(CMAKE_EXECUTABLE_SUFFIX ".html")
 include(src/demo/text/text.cmake)
 include(src/demo/sprite/sprite.cmake)
 include(src/demo/fire/fire.cmake)

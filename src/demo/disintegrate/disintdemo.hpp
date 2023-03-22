@@ -3,6 +3,7 @@
 
 
 #include "demo.hpp"
+#include "rainbowcycle.hpp"
 
 
 class DisintDemo : public Demo
@@ -29,6 +30,7 @@ private:
     Buffer* fullUvBuffer;
 
     std::shared_ptr<Texture> texture;
+    RainbowCycle colorCycle;
 };
 
 #endif

@@ -10,32 +10,15 @@
 #include <thread>
 #include <chrono>
 
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#include <stdio.h>
 
 namespace
 {
     void short_sleep()
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-
-
-    boost::program_options::options_description init_option_desc()
-    {
-        namespace opt = boost::program_options;
-        opt::options_description desc("Allowed options");
-        desc.add_options()
-            ("help", "show this")
-            ("root", "use virtual root window")
-            ("window-id", opt::value<std::string>(), "use window with ID as root window")
-        ;
-        return desc;
-    }
-
-    boost::program_options::options_description get_option_desc()
-    {
-        namespace opt = boost::program_options;
-        static opt::options_description desc = init_option_desc();
-        return desc;
     }
 }
 
@@ -55,6 +38,20 @@ Demo::~Demo()
 
 }
 
+Demo* global_demo = nullptr;
+
+void run_glob() {
+  if (!global_demo) {
+    return;
+  }
+
+  if (global_demo->run_one()) {
+  return;
+
+  } else {
+    return;
+  }
+}
 
 int Demo::run()
 {
@@ -66,25 +63,15 @@ int Demo::run()
     bool gameRunning = true;
     while(gameRunning)
     {
-        gameRunning = !update_demo();
-        if(!gameRunning) continue;
-
-        render();
-        if(renderDemoInfo) render_info();
-
-        if(usingXWindow)
-        {
-            window.xwindow->display();
-        }
-        else
-        {
-            window.window->display();
-        }
-
-        renderFreqCounter.update(time_ms(), renderFreq);
-
+        #ifdef __EMSCRIPTEN__
+  // Receives a function to call and some user data to provide it.
+    global_demo = this;
+  return 0;
+#else
+    gameRunning = run_one();
+    short_sleep();
+#endif
         // printstatus("render: ", renderFreq, " ", "update: ", updateFreq);
-        short_sleep();
     }
 
     cleanup();
@@ -93,9 +80,19 @@ int Demo::run()
     return 0;
 }
 
+bool Demo::run_one() {
+    if(update_demo()) return false;
+
+    render();
+    if(renderDemoInfo) render_info();
+    window.window->display();
+    renderFreqCounter.update(time_ms(), renderFreq);
+  return true;
+}
 
 bool Demo::init()
 {
+    emscripten_set_main_loop(run_glob, 30, 0);
     bool useXWindow = args.useRootWindow;
     println("creating window");
     if(!useXWindow)
@@ -130,34 +127,10 @@ void Demo::cleanup()
 }
 
 
-Demo::Args Demo::create_args(const boost::program_options::variables_map& vm)
+Demo::Args Demo::create_args()
 {
     Args args;
-
-    if(vm.count("help"))
-    {
-        args.printHelp = true;
-        args.shouldRun = false;
-    }
-
-    if(vm.count("root") || (vm.count("window-id")))
-    {
-        args.useRootWindow = true;
-        args.disablePrint = true;
-
-        if(vm.count("window-id"))
-        {
-            args.rootWindowID = std::stoi(vm["window-id"].as<std::string>(), nullptr, 16);
-        }
-    }
-
     return args;
-}
-
-
-boost::program_options::options_description Demo::options()
-{
-    return get_option_desc();
 }
 
 
@@ -174,7 +147,6 @@ bool Demo::initialize_window()
 bool Demo::initialize_xwindow(bool useRoot)
 {
     usingXWindow = true;
-    window.xwindow = new XWindow(useRoot);
     return true;
 }
 
@@ -182,7 +154,6 @@ bool Demo::initialize_xwindow(bool useRoot)
 bool Demo::initialize_xwindow(int rootwid)
 {
     usingXWindow = true;
-    window.xwindow = new XWindow(rootwid);
     return true;
 }
 
@@ -191,9 +162,6 @@ void Demo::set_window_callbacks()
 {
     if(usingXWindow)
     {
-        window.xwindow->set_resize_callback(
-                            [this](unsigned int w, unsigned int h){handle_resize(w, h);}
-                        );
     }
     else
     {
@@ -249,7 +217,6 @@ void Demo::cleanup_rendering()
 
     if(usingXWindow)
     {
-        delete window.xwindow;
     }
     else
     {
@@ -268,21 +235,21 @@ void Demo::render_info()
 
     renderer->render_string_box(font.get(),
                                 command,
-                                {1,1,0.8f},
+                                Color::BLACK,
                                 infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*0}),
                                 infoTextBox.box_scale({1.0f, lineHeight}), 0,
                                 Align::RIGHT);
 
     renderer->render_string_line(font.get(),
                                  std::wstring(L"Update: ") + std::to_wstring(updateFreq),
-                                 {1,1,0.8f},
+                                 Color::BLACK,
                                  infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*1}),
                                  infoTextBox.box_scale({1.0f, lineHeight}), 0,
                                  Align::RIGHT);
 
     renderer->render_string_line(font.get(),
                                  std::wstring(L"Render: ") + std::to_wstring(renderFreq),
-                                 {1,1,0.8f},
+                                 Color::BLACK,
                                  infoTextBox.box_position({0, 1.0f - lineHeight - lineHeight*2*2}),
                                  infoTextBox.box_scale({1.0f, lineHeight}), 0,
                                  Align::RIGHT);
@@ -309,10 +276,6 @@ bool Demo::update_demo()
 
         if(usingXWindow)
         {
-            if(window.xwindow->handle_events())
-            {
-                return true;
-            }
         }
         else
         {

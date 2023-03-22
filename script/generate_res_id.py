@@ -7,7 +7,7 @@ import time
 import string
 
 
-SRC_DIR = "common"
+SRC_DIR = "src/common"
 RES_DIR = "res"
 HEADER_FILENAME = "resid.hpp"
 ID_TYPE = "const unsigned int"

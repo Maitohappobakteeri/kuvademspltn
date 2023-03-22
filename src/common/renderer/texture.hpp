@@ -11,7 +11,7 @@ class Texture
 public:
 
     Texture(Texture* placeholder=nullptr);
-    Texture(GLuint ID);
+    Texture(GLuint ID, int w, int h);
     Texture(const std::string& filePath, bool loadNow=true, Texture* placeholder=nullptr);
     Texture(Texture&& texture);
 
@@ -32,6 +32,8 @@ public:
     unsigned int get_width() const;
     unsigned int get_height() const;
     GLuint get_texture() const;
+
+    void set_size(int w, int h);
 
     // Return true if Texture has been read from a file with success
     bool is_loaded() const;

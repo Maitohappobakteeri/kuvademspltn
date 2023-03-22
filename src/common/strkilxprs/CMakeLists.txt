@@ -46,7 +46,7 @@ else()
     set(CMAKE_CXX_FLAGS_DEBUG
         "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -Wfatal-errors -Wno-unused-function"
     )
-    set(CMAKE_CXX_COMPILER ${GPP_COMPILER})
+    set(CMAKE_CXX_COMPILER emcc)
 endif()
 
 set(LIB_TARGET ${PROJECT_NAME})

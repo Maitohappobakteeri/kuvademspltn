@@ -1,6 +1,7 @@
 set(DISINTERGRATE_SOURCE_FILES
     src/demo/disintegrate/main.cpp
     src/demo/disintegrate/disintdemo.cpp
+    src/demo/disintegrate/rainbowcycle.cpp
 )
 
 set(DISINTERGRATE_TARGET disintegrate)

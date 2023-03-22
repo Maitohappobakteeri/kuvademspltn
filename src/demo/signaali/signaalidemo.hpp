@@ -4,14 +4,9 @@
 
 #include "demo.hpp"
 
-#include <pulse/simple.h>
-
 #include <string>
 #include <memory>
-#include <atomic>
-#include <mutex>
 #include <queue>
-#include <thread>
 
 
 class SignaaliDemo : public Demo
@@ -45,19 +40,13 @@ private:
 
     glm::vec2 signalTextureScale;
 
-    pa_simple* inputStream;
-    pa_sample_spec sampleSpec;
-
-    std::mutex pointLock;
     std::queue<float> pointHeights;
-
-    std::atomic<bool> shouldStop;
-    std::thread inputThread;
 
     DynamicBox paramTextBox;
     float advanceSpeed;
     float pointSize;
     bool useLines;
+    float time;
 
     glm::vec2 lastPointPosition;
 };

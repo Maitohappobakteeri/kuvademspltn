@@ -71,14 +71,14 @@ bool RoiskeDemo::update(float step)
         splatterSprite = splatterSpriteGroup->create_sprite(create_sprite(splatterModel));
 
         std::uniform_real_distribution<float> realDist(-1.0f, 1.0f);
-        std::uniform_real_distribution<float> realDist2(0.0f, 2.0f);
+        std::uniform_real_distribution<float> realDist2(1.0f, 2.5f);
         splatterSprite->set_position(10.0f * glm::vec2{splatterScale.x * realDist(randGen),
                                                        splatterScale.y * realDist(randGen)});
 
         float r = realDist(randGen) * 6.3f;
         splatterSprite->set_rotation(r);
-        velocity = glm::vec2(std::cos(-r), std::sin(-r)) * realDist2(randGen);
-        rotationVelocity = realDist(randGen) * 1.0f;
+        velocity = glm::vec2(std::cos(-r), std::sin(-r)) * realDist2(randGen) * 1.0f;
+        rotationVelocity = realDist(randGen) * 0.3f;
     }
 
     splatterSprite->set_position(splatterSprite->get_position() + velocity * step);

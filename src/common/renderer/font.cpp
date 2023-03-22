@@ -148,7 +148,7 @@ Font::Char Font::get_character(wchar_t ch) const
     auto it = characters.find(ch);
     if(it == characters.end())
     {
-        return characters.at('?');
+        return characters.begin()->second;
     }
     else
     {
@@ -225,6 +225,7 @@ void Font::load_font(const std::string& filename, unsigned int size)
             if(posY + height >= TEX_SIZE)
             {
                 texture->set_texture(create_texture(TEX_SIZE, bitmapData));
+                texture->set_size(TEX_SIZE, TEX_SIZE);
                 textures.emplace_back(texture);
                 texture = new Texture();
 

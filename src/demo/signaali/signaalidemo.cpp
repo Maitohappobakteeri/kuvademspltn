@@ -3,22 +3,22 @@
 
 #include "print.hpp"
 #include "rng.hpp"
-
+#include <cmath>
 
 namespace
 {
     const unsigned int SIGNALTEXTURE_SIZE = 2048;
 
-    const float DEFAULT_ADVANCE_SPEED = -0.0008f;
-    const float ADVANCE_SPEED_INCREMENT = 0.0001f;
+    const float DEFAULT_ADVANCE_SPEED = -0.005f;
+    const float ADVANCE_SPEED_INCREMENT = 0.001f;
 
-    const float DEFAULT_POINT_SIZE = 0.0175f;
+    const float DEFAULT_POINT_SIZE = 0.009f;
     const float POINT_SIZE_INCREMENT = 0.0025f;
 }
 
 
 SignaaliDemo::SignaaliDemo(const Demo::Args& args, const std::wstring& command)
-    :Demo(args, command), signalTextureScale(1,1), shouldStop(false),
+    :Demo(args, command), signalTextureScale(1,1),
      advanceSpeed(DEFAULT_ADVANCE_SPEED), pointSize(DEFAULT_POINT_SIZE), useLines(false)
 {
     // renderDemoInfo = false;
@@ -46,17 +46,9 @@ bool SignaaliDemo::init()
     pointTexture = renderer->load_texture("res/signaali/point.png");
 
     renderer->set_render_target(*signalFramebuffer);
-    renderer->clear({0.6,0.6,0.6});
+    renderer->clear(Color::WHITE);
     renderer->set_render_target(*signalFramebuffer2);
-    renderer->clear({0.6,0.6,0.6});
-
-    sampleSpec.format = PA_SAMPLE_FLOAT32NE;
-    sampleSpec.channels = 2;
-    sampleSpec.rate = 44100;
-    inputStream = pa_simple_new(nullptr, PROJECT_NAME, PA_STREAM_RECORD, nullptr,
-                                "Signal in", &sampleSpec, nullptr, nullptr, nullptr);
-
-    inputThread = std::thread([this](){this->handle_signal_input();});
+    renderer->clear(Color::WHITE);
 
     // SDL_GL_SetSwapInterval(0);
 
@@ -69,11 +61,6 @@ bool SignaaliDemo::init()
 
 void SignaaliDemo::cleanup()
 {
-    shouldStop = true;
-    inputThread.join();
-
-    pa_simple_free(inputStream);
-
     signalFramebuffer.reset();
     signalTexture.reset();
 
@@ -88,6 +75,9 @@ void SignaaliDemo::cleanup()
 
 bool SignaaliDemo::update(float step)
 {
+    time += step;
+    pointHeights.push(std::cos(time * 5) * 0.7 + std::cos(time * 3) * 0.3);
+    pointHeights.push(std::sin(time * 5) * 0.7 + std::sin(time * 3) * 0.3);
     return false;
 }
 
@@ -98,8 +88,7 @@ void SignaaliDemo::render()
     float pointSize = this->pointSize / signalTextureScale.y;
 
     renderer->set_render_target(*signalFramebuffer);
-    renderer->render_rectangle({0.6,0.6,0.6}, {0,0}, {1,1}, 0);
-    pointLock.lock();
+    renderer->render_rectangle(Color::WHITE, {0,0}, {1,1}, 0);
     renderer->render_texture(signalTexture2.get(), {advance * pointHeights.size(),0}, {1,1}, 0);
     lastPointPosition.x += advance * pointHeights.size();
     while(pointHeights.size() != 0)
@@ -120,7 +109,6 @@ void SignaaliDemo::render()
 
         pointHeights.pop();
     }
-    pointLock.unlock();
 
     renderer->set_render_target(*signalFramebuffer2);
     renderer->render_texture(signalTexture.get(), {0,0}, {1,1}, 0);
@@ -138,7 +126,7 @@ void SignaaliDemo::render()
 
         renderer->render_string_box(font.get(),
                                     std::wstring(L"Advance speed: ") + std::to_wstring(advanceSpeed),
-                                    {1,1,0.8f},
+                                    Color::BLACK,
                                     paramTextBox.box_position({0, 1.0f - lineHeight
                                                                   - lineHeight*2*0}),
                                     paramTextBox.box_scale({1.0f, lineHeight}), 0,
@@ -146,7 +134,7 @@ void SignaaliDemo::render()
 
         renderer->render_string_line(font.get(),
                                      std::wstring(L"Point size: ") + std::to_wstring(pointSize),
-                                     {1,1,0.8f},
+                                     Color::BLACK,
                                      paramTextBox.box_position({0, 1.0f - lineHeight
                                                                    - lineHeight*2*1}),
                                      paramTextBox.box_scale({1.0f, lineHeight}), 0,
@@ -154,7 +142,7 @@ void SignaaliDemo::render()
 
         renderer->render_string_line(font.get(),
                                      std::wstring(L"Use lines: ") + std::to_wstring(useLines),
-                                     {1,1,0.8f},
+                                     Color::BLACK,
                                      paramTextBox.box_position({0, 1.0f - lineHeight
                                                                 - lineHeight*2*2}),
                                      paramTextBox.box_scale({1.0f, lineHeight}), 0,
@@ -200,26 +188,26 @@ void SignaaliDemo::handle_resize(unsigned int w, unsigned int h)
 
 void SignaaliDemo::handle_signal_input()
 {
-    while(!shouldStop)
-    {
-        const unsigned int BUFFER_SIZE = 64 * 2 * 2;
-        float buffer[BUFFER_SIZE];
-        int errorCode;
-        pa_simple_read(inputStream, buffer, sizeof(float) * BUFFER_SIZE, &errorCode);
+    // while(!shouldStop)
+    // {
+    //     const unsigned int BUFFER_SIZE = 64 * 2 * 2;
+    //     float buffer[BUFFER_SIZE];
+    //     int errorCode;
+    //     pa_simple_read(inputStream, buffer, sizeof(float) * BUFFER_SIZE, &errorCode);
 
-        const unsigned int pointSize = 3;
-        for(unsigned int p = 0; p < BUFFER_SIZE / pointSize; ++p)
-        {
-            float sum = 0;
-            for(unsigned int i = p * pointSize; i < p * pointSize + pointSize; ++i)
-            {
-                sum += buffer[i];
-            }
-            sum /= pointSize;
+    //     const unsigned int pointSize = 3;
+    //     for(unsigned int p = 0; p < BUFFER_SIZE / pointSize; ++p)
+    //     {
+    //         float sum = 0;
+    //         for(unsigned int i = p * pointSize; i < p * pointSize + pointSize; ++i)
+    //         {
+    //             sum += buffer[i];
+    //         }
+    //         sum /= pointSize;
 
-            pointLock.lock();
-            pointHeights.push(sum);
-            pointLock.unlock();
-        }
-    }
+    //         pointLock.lock();
+    //         pointHeights.push(sum);
+    //         pointLock.unlock();
+    //     }
+    // }
 }

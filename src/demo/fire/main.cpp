@@ -30,7 +30,7 @@ void render_fire(Shader& shader, Buffer& buf, const Color& pcol, const Color& sc
     glUniform4f(secColor, scol.r, scol.g, scol.b, scol.a);
     glUniform1f(timeId, SDL_GetTicks() / 1000.0f);
 
-    glm::mat4 modelMat = glm::mat4();
+    glm::mat4 modelMat = glm::mat4(1.0);
     glUniformMatrix4fv(mvpId, 1, GL_FALSE, &((projectionMatrix * modelMat)[0][0]));
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -78,10 +78,10 @@ protected:
 
         rainbow1.advance(0.3f);
         rainbow1.set_saturation_range(0.1, 1, 0.5);
-        rainbow1.set_brightness_range(0.1, 1, 0.25);
+        rainbow1.set_brightness_range(0.8, 1, 0.25);
 
         rainbow2.set_saturation_range(0.8, 1, 1.0);
-        rainbow2.set_brightness_range(0.4, 1, 0.8);
+        rainbow2.set_brightness_range(0.6, 1, 0.8);
 
         renderDemoInfo = false;
 
@@ -125,19 +125,7 @@ private:
 
 int main(int argc, char* argv[])
 {
-    namespace opt = boost::program_options;
-
-    // create options
-    opt::options_description desc(Demo::options());
-
-    // parse options
-    opt::variables_map vm;
-    opt::store(opt::command_line_parser(argc, argv).options(desc).extra_parser(is_wid_option)
-               .run(), vm);
-    opt::notify(vm);
-
-    // create Demo::Args from options
-    Demo::Args args = Demo::create_args(vm);
+    Demo::Args args = Demo::create_args();
 
     // Handle basic options
     if(args.disablePrint)
@@ -146,7 +134,6 @@ int main(int argc, char* argv[])
     }
     if(args.printHelp)
     {
-        println(desc);
     }
 
     if(args.shouldRun)

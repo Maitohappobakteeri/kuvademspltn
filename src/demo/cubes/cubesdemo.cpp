@@ -162,7 +162,7 @@ bool CubesDemo::update(float step)
 
 	dynamicsWorld->stepSimulation(step);
 
-    glm::mat4 viewRotationMat = glm::rotate(glm::rotate(glm::mat4(), rotationY, {0,1,0}),
+    glm::mat4 viewRotationMat = glm::rotate(glm::rotate(glm::mat4(1.0), rotationY, {0,1,0}),
                                             rotationX, {1,0,0});
     glm::vec4 rotatedEyePosition = viewRotationMat * (glm::vec4{-0.5f, 4.0f, -5.0f, 0.0f} * 1.5f);
     viewMatrix = glm::lookAt(glm::vec3(rotatedEyePosition),
