@@ -70,7 +70,7 @@ def main():
             chevron.render(
                 demo_page,
                 {
-                    "description": "Täällä on demoi.",
+                    "description": "Kokoelma erilaisia OpenGL demoja. Tehty noin 6v sitten ja portattu toimimaan modernissa selaimessa.",
                     "links": "".join(
                         [
                             f'<div onClick="window.open(\'./{demo_info[0]}/demo.html\', \'_self\');" class="card columns clickable"><img src="opengl-demo-{demo_info[0]}.png" class="card-image" /><div><p class="card-title">{demo_info[0]}</p><p class="card-content">{demo_info[1]}</p></div></div>'
